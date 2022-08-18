@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="src/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="src/style.css">
+  <link rel="stylesheet" href="src/font-awesome.min.css">
+
+  <title>Tourism Hamilton Application</title>
+  <style>
+  p { font-size: 18px !important; }
+  @media only screen and (max-width: 415px){
+    #myMap{
+      width: 415px !important;
+      height: 823px !important;
+    }
+  }
+  </style>
+</head>
+<body>
+        <div id="myMap" style="width:1384px;height:830px;z-index:-1;position: absolute;"></div>
+        <div id="overlay">
+          <div class="row">
+            <div class="col-12">
+              <div class="btn-group">
+                <button id="start" class="btn btn-primary btn mb-3" disabled><i class="fa fa-microphone mr-3"></i>Touch to Start</button>
+                <button type="button" class="btn btn-primary dropdown-toggle btn mb-3 dropdown-toggle-split info-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+                  <span class="sr-only">Toggle Dropdown</span>
+                  <i class="fa fa-info-circle"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                  <h4 class="dropdown-item " style="font-weight: 500;">Some things you can ask me:</h4>
+                  <div class="dropdown-divider"></div>
+                  <p class="dropdown-item" >my location </p>
+                  <p class="dropdown-item" >Instructions </p>
+                  <p class="dropdown-item" >Zoom in/out </p>
+                  <p class="dropdown-item" >Tell me a joke</p>
+                  <p class="dropdown-item" >Information about McMaster University</p>
+                  <p class="dropdown-item" >Information about City Hall</p>
+                  <p class="dropdown-item" >Ancaster Ontario</p>
+                  <p class="dropdown-item" >Hamilton Ontario</p>
+                  <p class="dropdown-item" >Show fire stations</p>
+                  <p class="dropdown-item" >Show waterfalls</p>
+                  <p class="dropdown-item" >Show libraries</p>
+                  <p class="dropdown-item" >Clear map</p>
+                </div>
+              </div>
+                <div id="statusB" class="spinner-grow text-info d-none" role="status" >
+                  <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-1">
+                <select class="shadow form-control custome-select custom-btn" onchange="changeMapStyle(this)">
+                  <option selected>Aerial <i class="fa fa-map-o"></i></option>
+                  <option selected>Dark <i class="fa fa-map-o"></i></option>
+                  <option selected>Light <i class="fa fa-map-o"></i></option>
+                </select>
+                <button class="shadow custom-btn btn btn-light locateMeWidth mt-1" onclick="locateMe()" ><i class="fa fa-map-marker fa-lg"></i></button>
+                <button id="zoomIn"  class="shadow btn btn-light mt-1 custom-btn" onclick="zoomIn()"><i class="fa fa-plus-square-o fa-lg"></i></button>
+                <button id="zoomOut" class="shadow btn btn-light custom-zoomOut" onclick="zoomOut()"><i class="fa fa-minus-square-o fa-lg"></i></button>
+              </div>
+          </div>
+      </div>
+
+  <!-- Load in the annyang library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script>
+
+  <!--
+    Load in fire station data obtained from this data set:
+    https://open.hamilton.ca/datasets/dbb028cd6bcc4b218c607952b760fd04_5
+
+    This JavaScript (JSON) data was obtained by clicking on APIs -> GeoJSON,
+    copying the URL into the browser and hitting enter, I downloaded the
+    file, saved it as firestations.js, and added "var firestations = " at
+    the top so I can access the object with that variable name in this script.
+  -->
+  <script src="src/firestations.js"></script>
+
+  <!--- The library location data was obtained in the same way... -->
+  <script src="src/libraries.js"></script>
+  <script src="src/waterfalls.js"></script>
+  <script src="src/jquery.slim.min.js"></script>
+  <script src="src/popper.min.js"></script>
+  <script src="src/bootstrap.min.js"></script>
+
+
+  <script>
+      var firstclick =true;
+      var paused =false;
+      var information="";
+      var synth = window.speechSynthesis;
+      var voice = ""
+      
+      $(window).on('load',function(){
+          voices = synth.getVoices();
+          voice = voices.filter(function(voice) { return voice.name == 'Samantha'; })[0];
+        $('#start').prop('disabled',false);
+      })
+      
+      document.getElementById("start").onclick = function()
+      {
+        if(firstclick){
+          $('#statusB').removeClass("d-none");
+          $('#statusB').show();
+          changeTextOn();
+          $('#start').prop('disabled',true);
+
+          var utterText = "Welcome to Hamilton! What can I help you with";
+          var utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+          utterThis.onend = function () {
+            annyang.start({ autoRestart: false, continuous: true });
+            $('#start').prop('disabled',false);
+          };
+          firstclick=false;
+        }else{
+          if(paused){
+            resume();
+          }else{
+            pause();
+          }
+        }
+      }
+
+  function changeTextOn(){
+    $('#start').text("I'm Listening...");
+  }
+  function changeTextOff(){
+    $('#start').text("Touch to Start");
+  }
+  function pause(){
+    $('#statusB').hide();
+      changeTextOff();
+      annyang.abort();
+      paused=true;
+  }
+
+  function resume(){
+    $('#statusB').show();
+      changeTextOn();
+      annyang.resume();
+      paused=false;
+  }
+
+
+  if (annyang) {
+    // Commands are defined as keys and values in an object, the key is the
+    // text for the command, and the value is callback function (i.e. event
+    // handler) to call for the command
+    var commands = {
+      //turn off the Voice System
+      "turn off" : function(){
+        information="";
+        annyang.abort();
+        $('#start').prop('disabled',true);
+        var utterText = "Turning off";
+        var utterThis = new SpeechSynthesisUtterance(utterText);
+        utterThis.voice = voice;
+        utterThis.pitch = 1.0;
+        utterThis.rate = 0.9;
+        synth.speak(utterThis);
+        pause();
+        utterThis.onend = function () {
+          $('#start').prop('disabled',false);
+        };
+      },
+      "Shut up" : function(){
+        information="";
+        annyang.abort();
+        $('#start').prop('disabled',true);
+
+        var utterText = "Turning off";
+        var utterThis = new SpeechSynthesisUtterance(utterText);
+        utterThis.voice = voice;
+        utterThis.pitch = 1.0;
+        utterThis.rate = 0.9;
+        synth.speak(utterThis);
+        pause();
+        utterThis.onend = function () {
+          $('#start').prop('disabled',false);
+        };
+      },
+      "turn *anyword off" : function(){
+        information="";
+        annyang.abort();
+        $('#start').prop('disabled',true);
+
+        var utterText = "Turning off";
+        var utterThis = new SpeechSynthesisUtterance(utterText);
+        utterThis.voice = voice;
+        utterThis.pitch = 1.0;
+        utterThis.rate = 0.9;
+        synth.speak(utterThis);
+        pause();
+        utterThis.onend = function () {
+          $('#start').prop('disabled',false);
+        };
+      },
+      "Shut *anyword up" : function(){
+        information="";
+        annyang.abort();
+        $('#start').prop('disabled',true);
+
+        var utterText = "Turning off";
+        var utterThis = new SpeechSynthesisUtterance(utterText);
+        utterThis.voice = voice;
+        utterThis.pitch = 1.0;
+        utterThis.rate = 0.9;
+        synth.speak(utterThis);
+        pause();
+        utterThis.onend = function () {
+          $('#start').prop('disabled',false);
+        };
+      },
+      //show my Location when my location, show my location, my current location is called;
+      "*anyword my location" : function(){
+        information="";
+        annyang.abort();
+        $('#start').prop('disabled',true);
+
+        var utterText = "Showing Your current location";
+        var utterThis = new SpeechSynthesisUtterance(utterText);
+        utterThis.voice = voice;
+        utterThis.pitch = 1.0;
+        utterThis.rate = 0.9;
+        synth.speak(utterThis);
+        locateMe();
+        utterThis.onend = function () {
+          annyang.resume();
+          $('#start').prop('disabled',false);
+        };
+      },
+      "current location" : function(){
+        information="";
+        annyang.abort();
+        $('#start').prop('disabled',true);
+
+        var utterText = "Showing Your current location";
+        var utterThis = new SpeechSynthesisUtterance(utterText);
+        utterThis.voice = voice;
+        utterThis.pitch = 1.0;
+        utterThis.rate = 0.9;
+        synth.speak(utterThis);
+        locateMe();
+        utterThis.onend = function () {
+          annyang.resume();
+          $('#start').prop('disabled',false);
+        };
+      },
+      "my location" : function(){
+        information="";
+        annyang.abort();
+        $('#start').prop('disabled',true);
+
+        var utterText = "Showing Your current location";
+        var utterThis = new SpeechSynthesisUtterance(utterText);
+        utterThis.voice = voice;
+        utterThis.pitch = 1.0;
+        utterThis.rate = 0.9;
+        synth.speak(utterThis);
+        locateMe();
+        utterThis.onend = function () {
+          annyang.resume();
+          $('#start').prop('disabled',false);
+        };
+      },
+      "*anyword current location" : function(){
+        information="";
+        annyang.abort();
+        $('#start').prop('disabled',true);
+
+        var utterText = "Showing Your current location";
+        var utterThis = new SpeechSynthesisUtterance(utterText);
+        utterThis.voice = voice;
+        utterThis.pitch = 1.0;
+        utterThis.rate = 0.9;
+        synth.speak(utterThis);
+        locateMe();
+        utterThis.onend = function () {
+          annyang.resume();
+          $('#start').prop('disabled',false);
+        };
+      },
+      // If "information about X" is uttered, we show on the page "Here is some
+      // information about X".
+      "information about *place" :
+      function(place)
+      {
+        annyang.abort();
+        $('#start').prop('disabled',true);
+
+        if(place==='McMaster' || place==='McMaster University'){
+          information="m";
+          var utterText = "McMaster University is a public research university in Hamilton. The university bears the name of William McMaster who bequeathed nine million dollor to its founding. Do you want to know more? ";
+          var utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+        }else if(place==='City Hall'){
+          information="ch";
+          var utterText = "Hamilton City Hall is an 8 storey building, located at the corner of Main Street West and Bay Street South. Do you want to know more?";
+          var utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+        }else{
+          var utterText = "Sorry, we do not have information about ";
+          utterText += place;
+          utterText+=". You can touch the information button for more instructions."
+          var utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+        }
+        utterThis.onend = function () {
+          annyang.resume();
+          $('#start').prop('disabled',false);
+        };
+      },
+      "yes" :
+      function()
+      {
+        annyang.abort();
+        $('#start').prop('disabled',true);
+
+        if(information==='m'){
+          var utterText = "McMaster University resulted from the outgrowth of educational initiatives undertaken by Baptists as early as the 1830s. It was founded in 1881 as Toronto Baptist College.";
+          var utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+        }else if(information==='ch'){
+          var utterText = "The municipal address of the building is 71 Main Street West. The street number was chosen carefully. Several buildings had been torn down to make way for the new City Hall.";
+          var utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+        }else{
+          var utterText = "Sorry, I do not understand. You can touch the information button for more instructions.";
+          var utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+        }
+        information="";
+        utterThis.onend = function () {
+          annyang.resume();
+          $('#start').prop('disabled',false);
+        };
+      },
+      "no" :
+      function()
+      {
+        information="";
+        annyang.abort();
+        $('#start').prop('disabled',true);
+
+        var utterText = "You can touch the information button for more instructions.";
+          var utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+          utterThis.onend = function () {
+          annyang.resume();
+          $('#start').prop('disabled',false);
+        };
+      },
+
+
+      // If "show firestations" or "show libraries" are uttered, the map will
+      // be populated with pushpins for firestations or libraries
+      //
+      // We use the firestations.js and libraries.js data above to do so, note
+      // that we know how to access the data structure be examining the data
+      // structure... so we can see for example that firestations.features
+      // contains an array of objects with firestation data, and we can see
+      // that firestations.features[i].properties contains latitude, longitude
+      // and name data.
+      //
+      // You could use a tool like this to help you visualize the data:
+      //    http://jsonviewer.stack.hu/
+      //
+      "show *type":
+      function(type)
+      {
+        information="";
+        annyang.abort();
+        $('#start').prop('disabled',true);
+
+        var utterThis;
+        // if type includes "fire" we assume the user wants to see firestations
+        if (type.includes("fire"))
+        {
+          var utterText = "Showing the firestations";
+          utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+          // loop through the array of firestations in the firestations.js data
+          for (i = 0; i < firestations.features.length; i++)
+          {
+            // add a pushpin to the map for each firestation
+            var loc = new Microsoft.Maps.Location(
+                  // use the latitude & longitude data for the pushpin position
+                  firestations.features[i].properties.LATITUDE,
+                  firestations.features[i].properties.LONGITUDE
+                );
+            var pin = createFontPushpin(loc, '\uF134', 'FontAwesome', 30, '#ff6666',firestations.features[i].properties.NAME);
+            map.entities.push(pin);
+            map.setView({ zoom: 13 });
+          }
+        }
+        // if type includes "libraries" we assume user wants to see libraries
+        else if (type.includes("libraries"))
+        {
+          information="";
+          var utterText = "Showing the libraries";
+          utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+          // loop through the array of libraries in the libraries.js data
+          for (i = 0; i < libraries.features.length; i++)
+          {
+            // add a pushpin to the map for each library
+            var loc = new Microsoft.Maps.Location(
+                  // use the latitude & longitude data for the pushpin position
+                  libraries.features[i].properties.LATITUDE,
+                  libraries.features[i].properties.LONGITUDE
+                );
+            var pin = createFontPushpin(loc, '\uF02e', 'FontAwesome', 30, '#009900',libraries.features[i].properties.NAME);
+            map.entities.push(pin);
+            map.setView({ zoom: 13 });
+          }
+        }
+        else if (type.includes("waterfalls"))
+        {
+          information="";
+          var utterText = "Showing the waterfalls";
+          utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+          // loop through the array of libraries in the libraries.js data
+          for (i = 0; i < waterfalls.features.length; i++)
+          {
+            // add a pushpin to the map for each library
+            var loc = new Microsoft.Maps.Location(
+                  // use the latitude & longitude data for the pushpin position
+                  waterfalls.features[i].properties.LATITUDE,
+                  waterfalls.features[i].properties.LONGITUDE
+                );
+            var pin = createFontPushpin(loc, '\uF043', 'FontAwesome', 30, '#0099ff',waterfalls.features[i].properties.NAME);
+            map.entities.push(pin);
+            map.setView({ zoom: 13 });
+          }
+        } else{
+          information="";
+          var utterText = "Sorry, I don't have information about ";
+          utterText+=type;
+          utterText += ". You can touch the information button for more instructions.";
+          utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+        }
+        utterThis.onend = function () {
+          annyang.resume();
+          $('#start').prop('disabled',false);
+        };
+      },
+
+      // If "clear map" is uttered all pushpins are removed from the map
+      "clear map" :
+      function()
+      {
+        information="";
+        annyang.abort();
+        $('#start').prop('disabled',true);
+
+        var utterText = "Removing all the Pins";
+        var utterThis = new SpeechSynthesisUtterance(utterText);
+        utterThis.voice = voice;
+        utterThis.pitch = 1.0;
+        utterThis.rate = 0.9;
+        synth.speak(utterThis);
+        // Code to remove all pushpins is taken directly from the API docs:
+        // https://www.bing.com/api/maps/sdkrelease/mapcontrol/isdk/deletepushpins
+        for (i = map.entities.getLength() - 1; i >= 0; i--) {
+          var pushpin = map.entities.get(i);
+          if (pushpin instanceof Microsoft.Maps.Pushpin) {
+            map.entities.removeAt(i);
+          }
+        }
+        utterThis.onend = function () {
+          annyang.resume();
+          $('#start').prop('disabled',false);
+        };
+      },
+
+      // Any other utterance will be caught by this case, and we use the
+      // Bing Maps geolocation service to find a latitude and longitude
+      // position based on the utterance:
+      //  https://www.bing.com/api/maps/sdkrelease/mapcontrol/isdk/searchbyaddress#JS
+      // We then place a pushpin on the map at that location.
+      //
+      // So if we say "Dundas, Ontario" or "Toronto, Ontario" it will
+      // attempt to find the location and put a pushpin on the map there
+      "*place Ontario" :
+      function(place)
+      {
+        information="";
+        annyang.abort();
+        $('#start').prop('disabled',true);
+
+        var utterText = "Looking at matching places";
+        var utterThis = new SpeechSynthesisUtterance(utterText);
+        utterThis.voice = voice;
+        utterThis.pitch = 1.0;
+        utterThis.rate = 0.9;
+        synth.speak(utterThis);
+        var requestOptions = {
+          bounds: map.getBounds(),
+          where: place+" Ontario",
+          callback: function (answer, userData) {
+              map.setView({ bounds: answer.results[0].bestView });
+              map.entities.push(
+                new Microsoft.Maps.Pushpin(
+                  answer.results[0].location,
+                  {title: place+" Ontario"}
+                )
+              );
+          }
+        };
+        searchManager.geocode(requestOptions);
+        utterThis.onend = function () {
+          annyang.resume();
+          $('#start').prop('disabled',false);
+        };
+      },
+      "*place Hamilton" :
+      function(place)
+      {
+        information="";
+        annyang.abort();
+        $('#start').prop('disabled',true);
+
+        var utterText = "Looking at matching places";
+        var utterThis = new SpeechSynthesisUtterance(utterText);
+        utterThis.voice = voice;
+        utterThis.pitch = 1.0;
+        utterThis.rate = 0.9;
+        synth.speak(utterThis);
+        var requestOptions = {
+          bounds: map.getBounds(),
+          where: place+" Hamilton",
+          callback: function (answer, userData) {
+              map.setView({ bounds: answer.results[0].bestView });
+              map.entities.push(
+                new Microsoft.Maps.Pushpin(
+                  answer.results[0].location,
+                  {title: place+" Hamilton"}
+                )
+              );
+          }
+        };
+        searchManager.geocode(requestOptions);
+        utterThis.onend = function () {
+          annyang.resume();
+          $('#start').prop('disabled',false);
+        };
+      },
+      "*place *place2 Hamilton" :
+      function(place,place2)
+      {
+        information="";
+        annyang.abort();
+        $('#start').prop('disabled',true);
+
+        var utterText = "Looking at matching places";
+        var utterThis = new SpeechSynthesisUtterance(utterText);
+        utterThis.voice = voice;
+        utterThis.pitch = 1.0;
+        utterThis.rate = 0.9;
+        synth.speak(utterThis);
+        var requestOptions = {
+          bounds: map.getBounds(),
+          where: place+" "+place2+" Hamilton",
+          callback: function (answer, userData) {
+              map.setView({ bounds: answer.results[0].bestView });
+              map.entities.push(
+                new Microsoft.Maps.Pushpin(
+                  answer.results[0].location,
+                  {title: place+" "+place2+" Hamilton"}
+                )
+              );
+          },
+        };
+        searchManager.geocode(requestOptions);
+        utterThis.onend = function () {
+          annyang.resume();
+          $('#start').prop('disabled',false);
+        };
+      },
+      "Thank you" :
+      function(){
+        information="";
+        annyang.abort();
+        $('#start').prop('disabled',true);
+
+        var utterText = "You are very welcome";
+        var utterThis = new SpeechSynthesisUtterance(utterText);
+        utterThis.voice = voice;
+        utterThis.pitch = 1.0;
+        utterThis.rate = 0.9;
+        synth.speak(utterThis);
+        utterThis.onend = function () {
+          annyang.resume();
+          $('#start').prop('disabled',false);
+        };
+      },
+      "*elseAll" :
+      function(elseAll){
+        information="";
+        annyang.abort();
+        $('#start').prop('disabled',true);
+
+        if(elseAll.includes('zoom in')){
+          zoomIn();
+          var utterText = "Zooming in.";
+          var utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+        }else if(elseAll.includes('instructions')||elseAll.includes('scripts')){
+          $('.dropdown-toggle').dropdown('update');
+          $('.dropdown-toggle').dropdown('show');
+          var utterText = "Here are the things you can ask me";
+          var utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+        }
+        else if(elseAll.includes('zoom out')){
+          zoomOut();
+          var utterText = "Zooming out";
+          var utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+        }else if(elseAll.includes("tell me a joke")){
+          var utterText ="Have you ever tried eating a clock? It's really time-consuming, especially if you go for seconds.";
+          var utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+        }else if(elseAll.includes("another joke")){
+          var utterText = "I have a fear of speed bumps. But I am slowly getting over it.";
+          var utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+        }else if(elseAll.includes("fine")||elseAll.includes("good")||elseAll.includes("great")){
+          var utterText = "Glad to heear that! Have a good trip!";
+          var utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+        }else if(elseAll.includes("hi")||elseAll.includes("hello")||elseAll.includes("hey")){
+          var utterText = "Hello, how's your day going?";
+          var utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+        }else{
+          var utterText = "Sorry, could you please say that again? You can touch the information button for more instructions.";
+          var utterThis = new SpeechSynthesisUtterance(utterText);
+          utterThis.voice = voice;
+          utterThis.pitch = 1.0;
+          utterThis.rate = 0.9;
+          synth.speak(utterThis);
+        }
+        utterThis.onend = function () {
+          annyang.resume();
+          $('#start').prop('disabled',false);
+        };
+      }
+    }
+    annyang.addCommands(commands);
+
+  };
+  //Call back
+  // annyang.addCallback('resultMatch', function(userSaid, commandText, phrases) {
+  // //   console.log(userSaid); // sample output: 'hello'
+  // //   console.log(commandText); // sample output: 'hello (there)'
+  // //   console.log(phrases); // sample output: ['hello', 'halo', 'yellow', 'polo', 'hello kitty']
+  // // });
+
+
+  // Loads the map, called after Bing map library finishes loading
+  function loadmap()
+  {
+    // Create a map centered on Hamilton, Ontario
+    //var location = new Location(43.2556765,-79.873802);
+    //var locRect = new LocationRect(location, 2,2);
+    bounds = Microsoft.Maps.LocationRect.fromLocations(new Microsoft.Maps.Location(43.393007,-80.134376), new Microsoft.Maps.Location(43.088894, -79.560065));
+    map = new Microsoft.Maps.Map(document.getElementById("myMap"),
+      {
+        center: new Microsoft.Maps.Location(43.2556765,-79.873802),
+        // we could set additional options when we create the map...
+        zoom: 14,
+        maxZoom:18,
+        minZoom:10,
+        maxBounds: bounds,
+        disableBirdseye: true,
+        disableStreetside:true,
+        showLocateMeButton:false,
+        enableClickableLogo:false,
+        showDashboard: false,
+        navigationBarMode:Microsoft.Maps.NavigationBarMode.square,
+        navigationBarOrientation: Microsoft.Maps.NavigationBarOrientation.horizontal,
+        supportedMapTypes:[Microsoft.Maps.MapTypeId.canvasDark]
+      });
+
+      //Request the user's location
+    // Load the search manager that allows us to search for locations
+    // (lat and long positions) based on an address, e.g. Toronto, Ontario
+    Microsoft.Maps.loadModule('Microsoft.Maps.Search', function () {
+      searchManager = new Microsoft.Maps.Search.SearchManager(map);
+    });
+    Microsoft.Maps.Events.addHandler(map, 'click', function () {
+    $('.dropdown-toggle').dropdown('hide');
+  });
+  }
+
+  function locateMe() {
+        navigator.geolocation.getCurrentPosition(function (position) {
+              var loc = new Microsoft.Maps.Location(
+                  position.coords.latitude,
+                  position.coords.longitude);
+
+              //Add a pushpin at the user's location.
+              var pin = createFontPushpin(loc,'\uF183', 'FontAwesome', 30, '#047bfe',"Me");
+              map.entities.push(pin);
+
+              //Center the map on the user's location.
+              map.setView({ center: loc, zoom: 16 });
+          });
+        }
+  function zoomIn(){
+    map.setView({
+      zoom: map.getZoom()+1,
+    });
+  }
+
+  function zoomOut(){
+    map.setView({
+      zoom: map.getZoom()-1,
+    });
+  }
+
+  function changeMapStyle(obj){
+    var val = obj.value;
+    // console.log(val);
+    var id;
+    switch (val) {
+      case 'Aerial':
+        id= Microsoft.Maps.MapTypeId.aerial;
+        break;
+      case 'Dark':
+        id= Microsoft.Maps.MapTypeId.canvasDark;
+      break;
+      case 'Light':
+        id= Microsoft.Maps.MapTypeId.road;
+      break;
+      default:
+        break;
+    }
+    map.setView({
+      mapTypeId:id
+    })
+  }
+
+  function createFontPushpin(location, text, fontName, fontSizePx, color, title) {
+        var c = document.createElement('canvas');
+        var ctx = c.getContext('2d');
+
+        //Define font style
+        var font = fontSizePx + 'px ' + fontName;
+        ctx.font = font
+
+        //Resize canvas based on sie of text.
+        var size = ctx.measureText(text);
+        c.width = size.width;
+        c.height = fontSizePx;
+
+        //Reset font as it will be cleared by the resize.
+        ctx.font = font;
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = color;
+
+        ctx.fillText(text, 0, 0);
+
+        return new Microsoft.Maps.Pushpin(location, {
+            title:title,
+            icon: c.toDataURL(),
+            anchor: new Microsoft.Maps.Point(c.width / 2, c.height / 2) //Align center of pushpin with location.
+        });
+    }
+  </script>
+  <script src="https://www.bing.com/api/maps/mapcontrol?key=Ao9pr871PkWBHGRHO0L9f_kuQRMt5jgnmM-oQ8i0e6Ll-8DNNEgrcbiHr_wjaKq4&callback=loadmap" async defer></script>
+
+</body>
+</html>

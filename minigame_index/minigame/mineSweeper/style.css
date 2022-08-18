@@ -1,0 +1,76 @@
+td {
+    width:22px;
+    height:22px;
+    border:1px solid yellow;
+    text-align:center;
+    font:14px/14px monospace;
+}
+.covered:hover{
+    background-color:green;
+    color:green;
+    width:22px;
+    height:22px;
+}
+td:hover{
+   cursor:pointer;
+}
+#totalBombs {
+    font-size:30px
+}
+#totalBombs:hover{
+    cursor:pointer;
+}
+.covered{
+    background-color:gray;
+    color:gray
+}
+.bomb{
+    background-color:white;
+    color:black;
+}
+.air{
+    background-color:white;
+    color:black
+}
+.flagged{
+    background-color:gray;
+    color:yellow;
+}
+#minesweeper{
+    display:-webkit-flex;
+}
+table{
+    -webkit-flex:10;
+    padding:10px;
+}
+#inputs{
+    -webkit-flex:1;
+    padding:10px;
+}
+h1{
+    text-align: center;
+}
+#tableGenerator{
+    color:black;
+}
+
+body{
+    /*background-color: #659DBD !important;*/
+    color: white !important;
+}
+@media only screen and (max-width:768px){ 
+    .non_visible{
+        display:none;
+    }
+}
+
+@media only screen and (min-width:769px){ 
+    .mobile_warning{
+        display:none;
+    }
+}
+
+#inputs{
+    color:black;
+}
+}

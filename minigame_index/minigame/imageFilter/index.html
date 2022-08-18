@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <title>Imgae Filter Tool</title>
+      <!-- Mobile Specific Metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+
+    <!-- Favicon
+    ================================================== -->
+    <link rel="apple-touch-icon" sizes="180x180" href="../../../assets/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../../assets/img/favicon.png">
+
+    <!-- Stylesheets
+    ================================================== -->
+    <!-- Bootstrap core CSS -->
+    <link href="../../../assets/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../../../assets/css/style1.css" rel="stylesheet">
+    <link href="../../../assets/css/responsive1.css" rel="stylesheet">
+
+    <!--Icon Link -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="text-center game-bg">
+  <section class="site-section section-imagefilter">
+    <div class="container">
+    <h2 class="mb_20">Image Filter:</h2>
+    <canvas style="background:#c3c3c3" id="can">
+    </canvas>
+    <h4>Load Image:</h4>
+    <p>
+      <input type="file" class="tc" id="input" multiple=false accept="image/*" onchange="upload()"></p>
+
+      <h4>Choose Filter:</h4>
+
+      <p><input class="btn btn-border"type="button" value="Grey Scale" onclick="greyScale()">
+      <input class="btn btn-border" type="button" value="Red" onclick="toRed()">
+      <input class="btn btn-border" type="button" value="Rainbow" onclick="rainbow()">
+      <input class="btn btn-border" type="button" value="Blur" onclick="toBlur()"></p>
+
+      <h4 class="mb_20">DIY color for the filter: <input type="color" id="color" value="#ffffff" onchange="colorFilter()"></h4>
+
+      <p><button class="btn btn-fill" type="button" onclick="reset()">Reset <i class='fa fa-refresh'></i> </button></p>
+
+    </div>
+  </section>
+
+  <section class="site-section section-imagefilter">
+    <div class="container">
+    <h2 class="mb_20">Green Screen Web Page:</h2>
+    <canvas id="a" style="background:lightgrey">
+    </canvas>
+    <canvas id="b" style="background:lightgrey">
+    </canvas>
+
+    <p>
+      <h4>Foreground Image:</h4><input class="tc" type="file" id="file1" multiple="false" accept="image/*" onchange="uploadFore()"></p>
+    <p>
+      <h4>Background Image:</h4><input class="tc" type="file" id="file2" multiple=false; accept="image/*" onchange="uploadBack()">
+  </p>
+      <p>
+      <button class="btn btn-fill" type="button"  onclick="merge()">Create Composite <i class="fa fa-check"></i></button>
+      <button class="btn btn-fill" type="button"  onclick="clearCanvas()">Clear Canvas <i class='fa fa-refresh'></i></button>
+    </p>
+    </div>
+  </section>
+
+    <footer id="colophon" class="site-footer indexPos pr">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4 col-xs-12">
+                    <a class="icon facebook-bg" target="_blank" href="https://www.facebook.com/oliver.chen.129142"><i class="fa fa-facebook"></i></a>
+                    <!--<a class="icon twitter-bg" href="#"><i class="icon-twitter"></i></a>-->
+                    <a class="icon gplus-bg" target="_blank" href="https://linkedin.com/in/yijunoliverchen"><i class="fa fa-linkedin"></i></a>
+                    <a class="icon linkedin-bg" target="_blank" href="https://github.com/GTArrow"><i class="fa fa-github"></i></a>
+                </div>
+                <div class="col-sm-4 col-sm-offset-0 col-xs-6 col-xs-offset-3"><p class="copyright">2020. All Rights Reserved</p></div>
+                <div class="col-sm-4 col-xs-3">
+                    <div class="text-right page-scroll">
+                        <a class="icon icon-up-bg" href="../../"><i class="fa fa-arrow-up"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer><!-- /#footer -->
+
+<script type="text/javascript" src="SimpleImage.js"></script>
+  <script  src="script.js"></script>
+
+</body>
+</html>

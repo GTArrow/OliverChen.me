@@ -1,0 +1,22 @@
+My Application is designed for Android Samsung Galaxy Tab A7 tablet only (as instructed), please view in 1386*832 viewport.
+Below are the scripts can be used to test my application:
+
+Hello/hi
+I'm fine/great/good
+thank you
+what are the Instructions?
+information about McMaster University -> yes/no
+information about City Hall -> yes/no
+information about canada
+show firestations
+show waterfalls
+show my location / my location / my current location /show my current location
+show libraries
+show toronto
+ancaster hamilton
+zoom in
+zoom out
+tell me a joke
+another joke
+clear map
+

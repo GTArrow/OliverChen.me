@@ -1,0 +1,58 @@
+.row-content{
+	margin: 0px auto;
+	padding: 20px 10px;
+    border-bottom: 1px ridge;
+    border-left: 1px ridge;
+    border-right: 1px ridge;
+	min-height:690px;
+}
+
+body{
+  font-size: 1rem;
+	padding:0px ;
+	z-index: 0;
+}
+.btn-lg{
+    font-size: 22px;
+}
+.custome-select{
+    width:100px;
+}
+.custom-btn{
+    color: #666666;
+    border: 1px solid #666666;
+    font-size: 1rem;
+}
+.locateMeWidth{
+    width:49px;
+}
+.custom-zoomOut{
+    color: #666666;
+    border: 1px solid #666666;
+    border-top: none;
+    font-size: 1rem;
+}
+#overlay {
+    position: fixed; /* Sit on top of the page content */
+    padding: 30px 0px 0px 20px;
+    width: 320px;
+    height: 315px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  }
+  .dropdown-toggle::after {
+    display: none;
+}
+.info-btn{
+    border-left: 2px solid white;
+}
+.dropdown-menu{
+    height: 370px;
+    overflow: scroll;
+}
+.dropdown-divider{
+
+}

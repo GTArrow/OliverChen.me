@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Snake Game</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+<script src="https://kit.fontawesome.com/df9fe42ab1.js" crossorigin="anonymous"></script>
+
+    <!-- Mobile Specific Metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+
+    <!-- Favicon
+    ================================================== -->
+    <link rel="apple-touch-icon" sizes="180x180" href="../../../assets/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../../assets/img/favicon.png">
+
+    <!-- Stylesheets
+    ================================================== -->
+    <!-- Bootstrap core CSS -->
+    <link href="../../../assets/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../../../assets/css/style1.css" rel="stylesheet">
+    <link href="../../../assets/css/responsive1.css" rel="stylesheet">
+
+    <!--Icon Link -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+</head>
+<body>
+	<div class="text-center game-bg">
+		<section class="pt_30 ">
+			<div id="wall">
+				<canvas id="gridCanvas"></canvas>
+
+				<span id="forScore">0</span>
+				<span class="warning_span">Use either keyboard or button on the right to control the snake</span>
+				<span class="highest_score">Highest Record: </span>
+				<!-- <span class="o_span speedUp">Accelerate ++</span>
+				<span class="o_span speedDown">Decelerate --</span> -->
+				<span class="o_span dirUp"><i class="fa fa-arrow-up"></i></span>
+				<span class="o_span dirRight"><i class="fa fa-arrow-right"></i></span>
+				<span class="o_span dirDown"><i class="fa fa-arrow-down"></i></span>
+				<span class="o_span dirLeft"><i class="fa fa-arrow-left"></i></span>
+				<span class="o_span reset_span">Reset</span>
+			</div>
+		</section>
+	</div>
+
+		<!--<footer id="colophon" class="site-footer indexPos ">-->
+  <!--      <div class="container">-->
+  <!--          <div class="row">-->
+  <!--              <div class="col-sm-4 col-xs-12">-->
+  <!--                  <a class="icon facebook-bg" target="_blank" href="https://www.facebook.com/oliver.chen.129142"><i class="icon-facebook"></i></a>-->
+                    <!--<a class="icon twitter-bg" href="#"><i class="icon-twitter"></i></a>-->
+  <!--                  <a class="icon gplus-bg" target="_blank" href="https://linkedin.com/in/yijunoliverchen"><i class="icon-linkedin"></i></a>-->
+  <!--                  <a class="icon linkedin-bg" target="_blank" href="https://github.com/GTArrow"><i class="fa fa-github"></i></a>-->
+  <!--              </div>-->
+  <!--              <div class="col-sm-4 col-sm-offset-0 col-xs-6 col-xs-offset-3"><p class="copyright">2020. All Rights Reserved</p></div>-->
+  <!--              <div class="col-sm-4 col-xs-3">-->
+  <!--                  <div class="text-right page-scroll">-->
+  <!--                      <a class="icon icon-up-bg" href="game_end/logout.php"><i class="icon-up"></i></a>-->
+  <!--                  </div>-->
+  <!--              </div>-->
+  <!--          </div>-->
+  <!--      </div>-->
+  <!--  </footer><!-- /#footer -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="script.js"></script>
+</body>
+</html>

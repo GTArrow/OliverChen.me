@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/minigame_index/minigame/picsMagic/static/css/main.942517b4.chunk.css",
+    "main.js": "/minigame_index/minigame/picsMagic/static/js/main.a13220bd.chunk.js",
+    "main.js.map": "/minigame_index/minigame/picsMagic/static/js/main.a13220bd.chunk.js.map",
+    "runtime-main.js": "/minigame_index/minigame/picsMagic/static/js/runtime-main.a271a824.js",
+    "runtime-main.js.map": "/minigame_index/minigame/picsMagic/static/js/runtime-main.a271a824.js.map",
+    "static/css/2.97a61902.chunk.css": "/minigame_index/minigame/picsMagic/static/css/2.97a61902.chunk.css",
+    "static/js/2.48991a3e.chunk.js": "/minigame_index/minigame/picsMagic/static/js/2.48991a3e.chunk.js",
+    "static/js/2.48991a3e.chunk.js.map": "/minigame_index/minigame/picsMagic/static/js/2.48991a3e.chunk.js.map",
+    "static/js/3.1bd9ec7e.chunk.js": "/minigame_index/minigame/picsMagic/static/js/3.1bd9ec7e.chunk.js",
+    "static/js/3.1bd9ec7e.chunk.js.map": "/minigame_index/minigame/picsMagic/static/js/3.1bd9ec7e.chunk.js.map",
+    "index.html": "/minigame_index/minigame/picsMagic/index.html",
+    "static/css/2.97a61902.chunk.css.map": "/minigame_index/minigame/picsMagic/static/css/2.97a61902.chunk.css.map",
+    "static/css/main.942517b4.chunk.css.map": "/minigame_index/minigame/picsMagic/static/css/main.942517b4.chunk.css.map",
+    "static/js/2.48991a3e.chunk.js.LICENSE.txt": "/minigame_index/minigame/picsMagic/static/js/2.48991a3e.chunk.js.LICENSE.txt",
+    "static/media/font-awesome.min.css": "/minigame_index/minigame/picsMagic/static/media/fontawesome-webfont.f691f37e.woff"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a271a824.js",
+    "static/css/2.97a61902.chunk.css",
+    "static/js/2.48991a3e.chunk.js",
+    "static/css/main.942517b4.chunk.css",
+    "static/js/main.a13220bd.chunk.js"
+  ]
+}
