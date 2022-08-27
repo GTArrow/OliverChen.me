@@ -99,6 +99,8 @@ let objects = []
 let score = 0
 let speed =4
 let rate =80
+let wait =false;
+let curFrame;
 var img1;
 var img2;
 
@@ -113,23 +115,52 @@ function preload(){
 }
 
 function updateObjects() {
+  //console.log(frameCount+" "+curFrame)
+  if(wait && frameCount - curFrame>120){
+    wait=false;
+    //score+=1;
+  }
   if(score>250){
+    if(score==250){
+      wait =true;
+      score+=1;
+      curFrame = frameCount;
+    }
+      rate=35
+    }else if(score>=200){
+      if(score==200){
+        wait =true;
+        score+=1;
+        curFrame = frameCount;
+      }
       rate=40
-      speed=5
-    }else if(score>200){
-      rate=45
       //speed=4.5
-    }else if(score>150){
+    }else if(score>=150){
+      if(score==150){
+        wait =true;
+        score+=1;
+        curFrame = frameCount;
+      }
       rate=50
       //speed=10
-    }else if(score>100){
+    }else if(score>=100){
+      if(score==100){
+        wait =true;
+        score+=1;
+        curFrame = frameCount;
+      }
       rate=60
       //speed=12
-    }else if(score>50){
+    }else if(score>=50){
+      if(score==50){
+        wait =true;
+        score+=1;
+        curFrame = frameCount;
+      }
       rate=70
       //speed=14
     }
-  if (frameCount % rate == 0) {
+  if (!wait && frameCount % rate == 0) {
     const rnd = Math.random()
     if (rnd > 0.75) {
      objects.push(new Obstacle(500, 200-10, 40, 30, speed)) 
@@ -160,8 +191,8 @@ function updateObjects() {
 }
 
 function updateScore() {
-  if (frameCount % 60 == 0 && frameCount>60) {
-    score += 1
+  if (!wait && frameCount % 60 == 0 && frameCount>60 ) {
+    score+=1;
   }
   drawScore()
 }

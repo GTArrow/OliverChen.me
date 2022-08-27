@@ -65,12 +65,21 @@ window.onload = async function() {
         var CurScore = GetURLParameter('score');
         $('#LCurScore').text(CurScore);
         $('#LHighestScore').text('Name: {0} / Score: {1}'.format(MyList[0].Name, MyList[0].Score));
+        var total =10;
+        var content;
         for(const item of MyList){
-            $("#l"+index).text('Rank {0} --- Name: {1} ---- Score: {2}'.format(index,item.Name, item.Score));
+            if(index>total){
+                return;
+            }
+            content = 'Rank {0} --- Name: {1} ---- Score: {2}'.format(index,item.Name, item.Score);
+            if(index<=3){
+                $("#l"+index).text(content);
+            }else{
+                $('#LVleaderboard').append("<li class='list-group-item list-group-item-danger'>"+content+"</li>");
+            }
             index++;
         }
     }
-    return MyList;
 }
 
 window.updateUserScore = async function(){
