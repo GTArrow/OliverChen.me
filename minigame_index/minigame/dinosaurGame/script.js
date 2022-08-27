@@ -1,26 +1,4 @@
 
-$.extend(
-      {
-        redirectPost: function(location, args)
-        {
-            var form = $('<form></form>');
-            form.attr("method", "get");
-            form.attr("action", location);
-    
-            $.each( args, function( key, value ) {
-                var field = $('<input></input>');
-    
-                field.attr("type", "hidden");
-                field.attr("name", key);
-                field.attr("value", value);
-    
-                form.append(field);
-            });
-            $(form).appendTo('body').submit();
-        }
-      });
-
-
       
 class Player {
   constructor () {
@@ -152,13 +130,6 @@ function updateObjects() {
       speed=6.3
     }
   if (frameCount % rate == 0) {
-      /*
-    if(score>200){
-      speed=2
-    }else{
-      speed=0.01*score+1
-    }
-    */
     const rnd = Math.random()
     if (rnd > 0.75) {
      objects.push(new Obstacle(500, 200-10, 40, 30, speed)) 
@@ -174,22 +145,22 @@ function updateObjects() {
     object.move()
     object.draw()
     if(object.collides(player)) {
-      /*
-      httpPost('score.php','json',data,function(response){
-          console.log(response);
-      }); 
-      */
+
       speed=0;
       frameRate(0)
-      var redirect = 'game_end';
-      $.redirectPost(redirect, {hs: score});
+      
+      setTimeout(function() { $("#LScore").text(score); },100);
+      $('#myModal').modal({
+        backdrop: 'static',
+        keyboard: false
+      });
       return;
     }
   }
 }
 
 function updateScore() {
-  if (frameCount % rate == 0 && frameCount>90) {
+  if (frameCount % 60 == 0 && frameCount>60) {
     score += 1
   }
   drawScore()

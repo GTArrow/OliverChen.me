@@ -48,7 +48,6 @@ function onPlayerReady(event) {
         });
 }
 
-
 /** main function starts here 
 
 */
