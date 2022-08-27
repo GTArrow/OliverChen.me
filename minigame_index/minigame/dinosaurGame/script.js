@@ -129,7 +129,6 @@ function updateObjects() {
       rate=70
       //speed=14
     }
-    console.log(rate);
   if (frameCount % rate == 0) {
     const rnd = Math.random()
     if (rnd > 0.75) {
