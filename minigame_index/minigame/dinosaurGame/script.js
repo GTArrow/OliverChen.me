@@ -113,22 +113,23 @@ function preload(){
 }
 
 function updateObjects() {
-  if(score>50){
-      rate=70
-      speed=4.5
+  if(score>250){
+      rate=40
+      speed=5
+    }else if(score>200){
+      rate=45
+      //speed=4.5
+    }else if(score>150){
+      rate=50
+      //speed=10
     }else if(score>100){
       rate=60
-      speed=4.8
-    }else if(score>150){
-        rate=53
-      speed=5.1
-    }else if(score>200){
-        rate=46
-      speed=5.8
-    }else if(score>250){
-        rate=40
-      speed=6.3
+      //speed=12
+    }else if(score>50){
+      rate=70
+      //speed=14
     }
+    console.log(rate);
   if (frameCount % rate == 0) {
     const rnd = Math.random()
     if (rnd > 0.75) {
