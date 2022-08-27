@@ -1,5 +1,5 @@
 
-      
+//update      
 class Player {
   constructor () {
     this.floor = 250
