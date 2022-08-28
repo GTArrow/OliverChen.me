@@ -109,42 +109,22 @@
 				snake_array[0].y=25;
 			}
 
-
 			for (var j = 1; j < snake_array.length; j++) {
 				var cell_x=snake_array[j].x;
 				var cell_y=snake_array[j].y;
 				if(sx==cell_x&&sy==cell_y){
 
-					var highestScore=score;
-					var redirect = 'game_end/';
-					$.redirectPost(redirect, {hs: highestScore});
-					
+					var highestScore=score;			
 					exit();
+					setTimeout(function() { $("#LScore").text(score); },100);
+					$('#myModal').modal({
+						backdrop: 'static',
+						keyboard: false
+					});
 					return;
 				}
 			};
 		}
-		
-		$.extend(
-			{
-				redirectPost: function(location, args)
-				{
-					var form = $('<form></form>');
-					form.attr("method", "get");
-					form.attr("action", location);
-			
-					$.each( args, function( key, value ) {
-						var field = $('<input></input>');
-			
-						field.attr("type", "hidden");
-						field.attr("name", key);
-						field.attr("value", value);
-			
-						form.append(field);
-					});
-					$(form).appendTo('body').submit();
-				}
-			  });
 
 		//reset
 		function reset(){
