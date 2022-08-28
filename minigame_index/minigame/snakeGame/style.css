@@ -115,30 +115,30 @@
 	}
 	.dirUp{
 		width:60px;
-		height: 35px;
+		height: 55px;
 		line-height: 35px;
 		position: absolute;
-		top:180px;
-		left: 645px;
+		top:160px;
+		left: 665px;
 	}
 	.dirRight{
-		width:35px;
+		width:55px;
 		height: 60px;
 		line-height: 60px;
 		position: absolute;
 		top:220px;
-		left: 690px;
+		left: 710px;
 	}
 	.dirDown{
 		width:60px;
-		height: 35px;
+		height: 55px;
 		line-height: 35px;
 		position: absolute;
 		top:285px;
-		left: 645px;
+		left: 665px;
 	}
 	.dirLeft{
-		width:35px;
+		width:55px;
 		height: 60px;
 		line-height: 60px;
 		position: absolute;
@@ -178,7 +178,7 @@
     		top: 332px;
 		}
 		.dirRight{
-			top: 376px;
+			top: 386px;
     		left: 183px;
 		}
 		.dirDown{
@@ -186,8 +186,8 @@
     		left: 122px;
 		}
 		.dirLeft{
-			top: 376px;
-    		left: 85px;
+			top: 386px;
+    		left: 65px;
 		}
 		#forScore{
 			top: -35px;
@@ -208,7 +208,7 @@
     		top: 520px;
 		}
 		.dirRight{
-			top: 565px;
+			top: 575px;
     		left: 349px;
 		}
 		.dirDown{
@@ -216,8 +216,8 @@
     		left: 280px;
 		}
 		.dirLeft{
-		    top: 565px;
-			left: 240px;
+		    top: 575px;
+			left: 220px;
 		}
 		.reset_span{
 			top: 697px;
