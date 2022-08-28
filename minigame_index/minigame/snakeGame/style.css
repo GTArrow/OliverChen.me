@@ -45,19 +45,19 @@
 	/*Added for mobile view */
 	@media only screen and (max-width: 600px) {
 		#gridCanvas{
-			    background: -webkit-linear-gradient(top,transparent 11px, #fff 12px),
-		            -webkit-linear-gradient(left,transparent 11px, #fff 12px);
-				background: -o-linear-gradient(top,transparent 11px, #fff 12px),
-				            -o-linear-gradient(left,transparent 11px, #fff 12px);
-				background: -moz-linear-gradient(top,transparent 11px, #fff 12px),
-				            -moz-linear-gradient(left,transparent 11px, #fff 12px);
-				background: linear-gradient(top,transparent 11px, #fff 12px),
-				            linear-gradient(left,transparent 11px, #fff 12px);
-				background-size: 12px 12px;
+			    background: -webkit-linear-gradient(top,transparent 9px, #fff 10px),
+		            -webkit-linear-gradient(left,transparent 9px, #fff 10px);
+				background: -o-linear-gradient(top,transparent 9px, #fff 10px),
+				            -o-linear-gradient(left,transparent 9px, #fff 10px);
+				background: -moz-linear-gradient(top,transparent 9px, #fff 10px),
+				            -moz-linear-gradient(left,transparent 9px, #fff 10px);
+				background: linear-gradient(top,transparent 9px, #fff 10px),
+				            linear-gradient(left,transparent 9px, #fff 10px);
+				background-size: 10px 10px;
 			}
 		#wall{
-			width:360px;
-			height:300px;
+			width:300px;
+			height:250px;
 		}
 	}
 

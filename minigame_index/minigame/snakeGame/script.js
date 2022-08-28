@@ -90,24 +90,23 @@
 			
 			 snake_array.unshift(tail);
 
-			for (var i = 0; i < snake_array.length; i++) {
-				var sa=snake_array[i];
-				snake_cell(sa.x,sa.y);
-			};
-
-
 			if(sx>=30){
 				snake_array[0].x=0;
 			}
 			else if(sx<0){
-				snake_array[0].x=30;
+				snake_array[0].x=29;
 			}
 			else if(sy>=25){
 				snake_array[0].y=0;
 			}
 			else if(sy<0){
-				snake_array[0].y=25;
+				snake_array[0].y=24;
 			}
+
+			for (var i = 0; i < snake_array.length; i++) {
+				var sa=snake_array[i];
+				snake_cell(sa.x,sa.y);
+			};
 
 			for (var j = 1; j < snake_array.length; j++) {
 				var cell_x=snake_array[j].x;
