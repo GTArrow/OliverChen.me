@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js';
-import { getFirestore, collection, getDocs, addDoc} from 'https://www.gstatic.com/firebasejs/9.9.3/firebase-firestore.js';
+import { getFirestore, collection, getDocs, addDoc, setDoc, doc} from 'https://www.gstatic.com/firebasejs/9.9.3/firebase-firestore.js';
 
 $.extend(
     {
@@ -55,16 +55,39 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-window.onload = async function() {
-    const Col = collection(db, 'LeaderBoard');
-    const Snapshot = await getDocs(Col);
-    const MyList = Snapshot.docs.map(doc => doc.data());
-    var index=1;
+if($('#LHighestScore_1').length>0 || $('#LHighestScore_2').length>0 || $('#LVleaderboard_1').length >0 || $('#LVleaderboard_2').length >0){
+    window.onload = async function() {
+        const Col = collection(db, 'LeaderBoard');
+        const Snapshot = await getDocs(Col);
+
+        // //Add extra field
+        // for(var mydoc of Snapshot.docs){
+        //     await setDoc(doc(db, "LeaderBoard", mydoc.id), {GameID: 1}, {merge: true});
+        // }
+        const MyList = Snapshot.docs.map(doc => doc.data());
+
+        if(MyList.length>0){
+            MyList.sort((a,b)=>b.Score-a.Score);
+            var NewList;
+            if($('#LHighestScore_1').length>0 || $('#LVleaderboard_1').length >0){
+                NewList = MyList.filter(item => item.GameID == 1);
+                BindLeaderBoardList(NewList, 1);
+            }
+            if($('#LHighestScore_2').length>0 || $('#LVleaderboard_2').length >0){
+                NewList = MyList.filter(item => item.GameID == 2);
+                BindLeaderBoardList(NewList, 2);
+            }
+        }
+    }
+}
+
+function BindLeaderBoardList(MyList, GameID){
+    var CurScore = GetURLParameter('score');
+    $('#LCurScore').text(CurScore);
     if(MyList.length>0){
-        MyList.sort((a,b)=>b.Score-a.Score);
-        var CurScore = GetURLParameter('score');
-        $('#LCurScore').text(CurScore);
-        $('#LHighestScore').text('Name: {0} / Score: {1}'.format(MyList[0].Name, MyList[0].Score));
+        var index=1;
+        
+        $('#LHighestScore_'+GameID).text('Name: {0} / Score: {1}'.format(MyList[0].Name, MyList[0].Score));
         var total =10;
         var content;
         for(const item of MyList){
@@ -73,23 +96,22 @@ window.onload = async function() {
             }
             content = 'Rank {0} --- Name: {1} ---- Score: {2}'.format(index,item.Name, item.Score);
             if(index<=3){
-                $("#l"+index).text(content);
+                $('#l{0}_{1}'.format(index, GameID)).text(content);
             }else{
-                $('#LVleaderboard').append("<li class='list-group-item list-group-item-danger'>"+content+"</li>");
+                $('#LVleaderboard_'+GameID).append("<li class='list-group-item list-group-item-danger'>"+content+"</li>");
             }
             index++;
         }
     }
 }
 
-window.updateUserScore = async function(){
+window.updateUserScore = async function(GameID){
     var name = $("#TBName").val();
     var score = $("#LScore").text();
     await addDoc(collection(db,'LeaderBoard'),{
         Name: name,
-        Score: score
+        Score: score,
+        GameID: parseInt(GameID),
     });
-    var redirect = 'game_end';
-    //$.redirectPost(redirect);
     window.location.href = 'game_end/index.html?score='+score;
 }

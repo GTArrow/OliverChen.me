@@ -33,7 +33,7 @@
     <!--Icon Link -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
-
+    <script type="module" src="../../../assets/js/dbaccess.js"></script>
 </head>
 <body>
 	<div class="text-center game-bg">
@@ -43,7 +43,7 @@
 
 				<span id="forScore">0</span>
 				<span class="warning_span">Use either keyboard or button on the right to control the snake</span>
-				<span class="highest_score">Highest Record: </span>
+				<span class="highest_score">Highest Record: <span class="label label-info" id="LHighestScore_2"></span></span>
 				<!-- <span class="o_span speedUp">Accelerate ++</span>
 				<span class="o_span speedDown">Decelerate --</span> -->
 				<span class="o_span dirUp"><i class="fa fa-arrow-up"></i></span>
@@ -54,6 +54,29 @@
 			</div>
 		</section>
 	</div>
+
+  <div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick="document.location.reload(true)"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Your score is: <span class="label label-info" id="LScore"></span></h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group row">
+                <label for="TBName" class="col-sm-2 col-form-label">Your Name: </label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="TBName">
+                </div>
+              </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="BSubmit" onclick="updateUserScore(2)">Submit</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" onClick="document.location.reload(true)">Restart</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 		<!--<footer id="colophon" class="site-footer indexPos ">-->
   <!--      <div class="container">-->
@@ -73,7 +96,10 @@
   <!--          </div>-->
   <!--      </div>-->
   <!--  </footer><!-- /#footer -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script type="text/javascript" src="script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="../../../assets/js/bootstrap.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="script.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 </body>
 </html>

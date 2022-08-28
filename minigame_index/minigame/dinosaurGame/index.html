@@ -35,10 +35,10 @@
     <script type="module" src="../../../assets/js/dbaccess.js"></script>
 </head>
 <body class="text-center game-bg">
-	<section class="site-section ">
+	<section class="site-section "  style="min-height: inherit;">
 		<div class="container">
 		<p>V1.2 Press Space/Up to jump</p>
-		<p>Highest record:<span class="label label-info" id="LHighestScore"></span>
+		<p>Highest record:<span class="label label-info" id="LHighestScore_1"></span>
 			</p>
 		</div>
 	</section>
@@ -59,7 +59,7 @@
                   </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary" id="BSubmit" onclick="updateUserScore()">Submit</button>
+              <button type="button" class="btn btn-primary" id="BSubmit" onclick="updateUserScore(1)">Submit</button>
               <button type="button" class="btn btn-default" data-dismiss="modal" onClick="document.location.reload(true)">Restart</button>
             </div>
           </div>

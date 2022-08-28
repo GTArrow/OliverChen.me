@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Chrome Dinosaur Game</title>
+	<title>Mini-Game Leaderboard</title>
 	    <!-- Mobile Specific Metas
     ================================================== -->
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
@@ -13,36 +13,46 @@
 
     <!-- Favicon
     ================================================== -->
-    <link rel="apple-touch-icon" sizes="180x180" href="../../../../assets/img/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="../../../../assets/img/favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../../../assets/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../../assets/img/favicon.png">
 
     <!-- Stylesheets
     ================================================== -->
     <!-- Bootstrap core CSS -->
-    <link href="../../../../assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../assets/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="../../../../assets/css/style1.css" rel="stylesheet">
-    <link href="../../../../assets/css/responsive1.css" rel="stylesheet">
+    <link href="../../../assets/css/style1.css" rel="stylesheet">
+    <link href="../../../assets/css/responsive1.css" rel="stylesheet">
 
     <!--Icon Link -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script type="module" src="../../../../assets/js/dbaccess.js"></script>
+    <script type="module" src="../../../assets/js/dbaccess.js"></script>
 	<!--<link rel="stylesheet" type="text/css" href="style.css">-->
 </head>
 <body class="text-center game-bg game-end">
 	<section class="site-section ">
 		<div class="container">
-			<h2>Game End</h2><br/>
-			<p id="cur_score" ><strong>Your score is:</strong> <span class="label label-info" id="LCurScore"></span></p>
-            <p ><strong>Leaderboard:</strong></p>
-            <ul class="list-group" id="LVleaderboard_1">
-                <li class="list-group-item list-group-item-success" id="l1_1"></li>
-                <li class="list-group-item list-group-item-info" id="l2_1"></li>
-                <li class="list-group-item list-group-item-warning" id="l3_1"></li>
-              </ul>
-			<a href="../" style="color:white;">Press here to Restart</a>
+            <div class="row">
+                <div class="col-xs-12 col-lg-6">
+                    <p ><strong>Dinosaur Jump Leaderboard:</strong></p>
+                    <ul class="list-group" id="LVleaderboard_1">
+                        <li class="list-group-item list-group-item-success" id="l1_1"></li>
+                        <li class="list-group-item list-group-item-info" id="l2_1"></li>
+                        <li class="list-group-item list-group-item-warning" id="l3_1"></li>
+                    </ul>
+                </div>
+
+                <div class="col-xs-12 col-lg-6">
+                    <p ><strong>Snake Game Leaderboard:</strong></p>
+                    <ul class="list-group" id="LVleaderboard_2">
+                        <li class="list-group-item list-group-item-success" id="l1_2"></li>
+                        <li class="list-group-item list-group-item-info" id="l2_2"></li>
+                        <li class="list-group-item list-group-item-warning" id="l3_2"></li>
+                    </ul>
+                </div>
+            </div>
 		</div>
 	</section>
 
@@ -58,7 +68,7 @@
                 <div class="col-sm-4 col-sm-offset-0 col-xs-6 col-xs-offset-3"><p class="copyright">2020. All Rights Reserved</p></div>
                 <div class="col-sm-4 col-xs-3">
                     <div class="text-right page-scroll">
-                        <a class="icon icon-up-bg" href="../../../"><i class="fa fa-arrow-up"></i></a>
+                        <a class="icon icon-up-bg" href="../../"><i class="fa fa-arrow-up"></i></a>
                     </div>
                 </div>
             </div>

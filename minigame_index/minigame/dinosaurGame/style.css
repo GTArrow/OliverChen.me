@@ -10,15 +10,6 @@ body {
   background-color: #659DBD;
 }
 
-.modal-header{
-    height: 50px !important;
-}
-
-.modal-header .close{
-    height: inherit !important; 
-    width: 50px !important;;
-    font-size: larger !important;;
-}
 
 .minigame-footer{
     position: relative!important;
