@@ -170,28 +170,28 @@
 			display:none;
 		}
 		.highest_score{
-			top: -60px;
+			top: -80px;
     		left: 0px;
 		}
 		.dirUp{
-			left: 152px;
+			left: 122px;
     		top: 332px;
 		}
 		.dirRight{
 			top: 376px;
-    		left: 213px;
+    		left: 183px;
 		}
 		.dirDown{
 			top: 442px;
-    		left: 152px;
+    		left: 122px;
 		}
 		.dirLeft{
 			top: 376px;
-    		left: 115px;
+    		left: 85px;
 		}
 		#forScore{
-			top: -38px;
-    		left: 298px;
+			top: -35px;
+    		left: 0px;
 		}
 	}
 
@@ -237,6 +237,6 @@
         padding: 5px 0 !important;
     }
 }
-	.pt_30{
-		padding-top: 30px;
+	.pt_50{
+		padding-top: 50px;
 	}
