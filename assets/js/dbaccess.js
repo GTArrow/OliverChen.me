@@ -1,5 +1,6 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js';
 import { getFirestore, collection, getDocs, addDoc, setDoc, doc} from 'https://www.gstatic.com/firebasejs/9.9.3/firebase-firestore.js';
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-auth.js;
 
 $.extend(
     {
@@ -52,10 +53,24 @@ const firebaseConfig = {
     appId: "1:407718051896:web:ab3359c4b176377fad26cd"
 }
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const app;
+const db;
 
-if($('#LHighestScore_1').length>0 || $('#LHighestScore_2').length>0 || $('#LVleaderboard_1').length >0 || $('#LVleaderboard_2').length >0){
+
+const auth = getAuth();
+signInAnonymously(auth)
+  .then(() => {
+    
+    app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+  });
+
+
+if(db!=undefined || $('#LHighestScore_1').length>0 || $('#LHighestScore_2').length>0 || $('#LVleaderboard_1').length >0 || $('#LVleaderboard_2').length >0){
     window.onload = async function() {
         const Col = collection(db, 'LeaderBoard');
         const Snapshot = await getDocs(Col);
@@ -105,13 +120,15 @@ function BindLeaderBoardList(MyList, GameID){
     }
 }
 
-window.updateUserScore = async function(GameID){
-    var name = $("#TBName").val();
-    var score = $("#LScore").text();
-    await addDoc(collection(db,'LeaderBoard'),{
-        Name: name,
-        Score: score,
-        GameID: parseInt(GameID),
-    });
-    window.location.href = 'game_end/index.html?score='+score;
+if(db!=undefined){
+    window.updateUserScore = async function(GameID){
+        var name = $("#TBName").val();
+        var score = $("#LScore").text();
+        await addDoc(collection(db,'LeaderBoard'),{
+            Name: name,
+            Score: score,
+            GameID: parseInt(GameID),
+        });
+        window.location.href = 'game_end/index.html?score='+score;
+    }
 }
