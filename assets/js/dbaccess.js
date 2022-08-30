@@ -80,7 +80,7 @@ if($('#LHighestScore_1').length>0 || $('#LHighestScore_2').length>0 || $('#LVlea
         const MyList = Snapshot.docs.map(doc => doc.data());
 
         if(MyList.length>0){
-            MyList.sort((a,b)=>b.Score-a.Score);
+            
             var NewList;
             if($('#LHighestScore_1').length>0 || $('#LVleaderboard_1').length >0){
                 NewList = MyList.filter(item => item.GameID == 1 && !isNaN(item.Score) && parseInt(item.Score)<400);
@@ -112,6 +112,7 @@ function BindLeaderBoardList(MyList, GameID){
     var CurScore = GetURLParameter('score');
     $('#LCurScore').text(CurScore);
     if(MyList.length>0){
+        MyList.sort((a,b)=>b.Score-a.Score);
         var index=1;
         
         $('#LHighestScore_'+GameID).text('Name: {0} / Score: {1}'.format(MyList[0].Name, MyList[0].Score));
