@@ -97,12 +97,14 @@ if($('#LHighestScore_1').length>0 || $('#LHighestScore_2').length>0 || $('#LVlea
 window.updateUserScore = async function(GameID){
     var name = $("#TBName").val();
     var score = $("#LScore").text();
-    await addDoc(collection(db,'LeaderBoard'),{
-        Name: filter.clean(name),
-        Score: score,
-        GameID: parseInt(GameID),
-    });
-    window.location.href = 'game_end/index.html?score='+score;
+    if(!isNaN(score) && parseInt(item.Score)<400){
+        await addDoc(collection(db,'LeaderBoard'),{
+            Name: name,
+            Score: score,
+            GameID: parseInt(GameID),
+        });
+        window.location.href = 'game_end/index.html?score='+score;
+    }
 }
 
 
