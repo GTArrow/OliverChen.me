@@ -87,7 +87,7 @@ if($('#LHighestScore_1').length>0 || $('#LHighestScore_2').length>0 || $('#LVlea
                 BindLeaderBoardList(NewList, 1);
             }
             if($('#LHighestScore_2').length>0 || $('#LVleaderboard_2').length >0){
-                NewList = MyList.filter(item => item.GameID == 2 );
+                NewList = MyList.filter(item => item.GameID == 2 && !isNaN(item.Score) && parseInt(item.Score)<400);
                 BindLeaderBoardList(NewList, 2);
             }
         }
