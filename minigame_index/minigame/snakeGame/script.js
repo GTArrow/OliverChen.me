@@ -115,7 +115,7 @@
 
 					var highestScore=score;			
 					exit();
-					setTimeout(function() { $("#LScore").text(score); },100);
+					setTimeout(function() { $("#LScore").text(score);  $("#HScore").val(score);} ,100);
 					$('#myModal').modal({
 						backdrop: 'static',
 						keyboard: false
