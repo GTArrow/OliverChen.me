@@ -55,16 +55,20 @@ function handleGameBoardClick(event) {
     }
     if(row<=boardSize && col<=boardSize && row>=0 && col>=0){
         placeStone(row, col);
-        var aiMove = findBestMove(gameBoard,2);
-        if(aiMove===null){
-          const list = generatePossibleMoves(gameBoard);
-          aiMove = list[Math.floor(Math.random() * list.length)];
-          console.log("There is no way for ai to win, so AI goes randomly.")
-        }
-        console.log(aiMove);
-
-        placeStone(aiMove.row, aiMove.col);
         renderAllStone();
+
+        setTimeout(() => {
+          var aiMove = findBestMove(gameBoard,2);
+          if(aiMove===null){
+            const list = generatePossibleMoves(gameBoard);
+            aiMove = list[Math.floor(Math.random() * list.length)];
+            console.log("There is no way for ai to win, so AI goes randomly.")
+          }
+          //console.log(aiMove);
+
+          placeStone(aiMove.row, aiMove.col);
+          renderAllStone();
+      }, 0);
     }
   }
 
