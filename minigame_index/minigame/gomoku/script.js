@@ -55,7 +55,12 @@ function handleGameBoardClick(event) {
     }
     if(row<=boardSize && col<=boardSize && row>=0 && col>=0){
         placeStone(row, col);
-        const aiMove = findBestMove(gameBoard,2);
+        var aiMove = findBestMove(gameBoard,2);
+        if(aiMove===null){
+          const list = generatePossibleMoves(gameBoard);
+          aiMove = list[Math.floor(Math.random() * list.length)];
+          console.log("There is no way for ai to win, so AI goes randomly.")
+        }
         console.log(aiMove);
 
         placeStone(aiMove.row, aiMove.col);
@@ -99,7 +104,7 @@ function renderAllStone(){
     }
     if(winList!==null && winList.length>0){
       for(var {row, col} of winList){
-        console.log($(`.row${row}_col${col}`));
+        //console.log($(`.row${row}_col${col}`));
         $(`.row${row}_col${col}`).addClass("winner");
       }
     }

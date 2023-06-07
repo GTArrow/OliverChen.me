@@ -14,9 +14,9 @@ function findBestMove(board, depth) {
             bestMove = move;
         }
     }
-
     return bestMove;
 }
+
 
 function generatePossibleMoves(board) {
     const possibleMoves = [];
@@ -100,7 +100,8 @@ function isGameOver(board){
 function evaluate(board) {
   
     // Evaluation weights for different scenarios
-    const winScore = 1000000000;
+    //const winScore = 1000000000;
+    const winScore = Infinity;
     const gamma =5;
   
     // Check for a win
@@ -240,7 +241,7 @@ function PotentialThreat(sequence, player) {
 //check if there is a potential three stones
     const pattern ={
         //4 stones potentially conncted in a row with or without block
-        "_OOOO": 500000,
+        "_OOOO": 1000000,
         //3 stones potentially conncted in a row without block
         "_OOO_":300000,
         //3 stones potentially conncted in a row with one block
@@ -256,6 +257,7 @@ function PotentialThreat(sequence, player) {
         let maxContinuousCount =0;
         let count =0;
         let bolckCount =0;
+        let spaceCount =0;
         let blockIndexList =[];
         var index=0;
         for(let stone of sequence){
@@ -266,11 +268,13 @@ function PotentialThreat(sequence, player) {
                 count =0;
                 bolckCount++;
                 blockIndexList.push(index);
+            }else{
+                spaceCount++;
             }
             index++;
         }
         maxContinuousCount = Math.max(maxContinuousCount, count);
-        if(maxContinuousCount==4 && !(sequence[0]===opponent && sequence[-1]===opponent) ){
+        if(maxContinuousCount==4 && spaceCount ==0 && !(sequence[0]===opponent && sequence[-1]===opponent) ){
             return pattern._OOOO;
         }
         if(maxContinuousCount==3 && bolckCount==0){
