@@ -92,6 +92,16 @@ h4 {
     border: 1px solid #212121; 
 }
 
+.text-bold{
+    font-weight: bold;
+}
+.font-white{
+    color: white;
+}
+.font-success{
+    color: #a7f1cf;;
+}
+
 .btn-fill:hover,
 .btn-fill:focus {
     color: #fff;
