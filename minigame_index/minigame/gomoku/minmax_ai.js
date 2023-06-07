@@ -3,11 +3,11 @@ const opponentPlayer = 'X'; //White
 
 function findBestMove(board, depth) {
     let bestEval = -Infinity;
-    let bestMove = {row:0,col:0};
+    let bestMove = null;
     for (let move of generatePossibleMoves(board)) {
         const newBoard = makeMove(board, move, aiPlayer);
         const eval = alphaBetaPruning(newBoard, depth - 1, -Infinity, Infinity, false);
-        console.log(`row:${move.row} col:${move.col} eval:${eval}`)
+        //console.log(`row:${move.row} col:${move.col} eval:${eval}`)
 
         if (eval > bestEval) {
             bestEval = eval;
@@ -55,11 +55,10 @@ function alphaBetaPruning(board, depth, alpha, beta, maximizingPlayer) {
     if (depth === 0 || isGameOver(board)) {
       return evaluate(board);
     }
-    let player = maximizingPlayer?aiPlayer:opponentPlayer;
     if (maximizingPlayer) {
       let maxEval = -Infinity;
       for (let move of generatePossibleMoves(board)) {
-        const newBoard = makeMove(board, move, player);
+        const newBoard = makeMove(board, move, aiPlayer);
         const eval = alphaBetaPruning(newBoard, depth - 1, alpha, beta, false);
         maxEval = Math.max(maxEval, eval);
         alpha = Math.max(alpha, eval);
@@ -71,8 +70,9 @@ function alphaBetaPruning(board, depth, alpha, beta, maximizingPlayer) {
     } else {
       let minEval = Infinity;
       for (let move of generatePossibleMoves(board)) {
-        const newBoard = makeMove(board, move, player);
+        const newBoard = makeMove(board, move, opponentPlayer);
         const eval = alphaBetaPruning(newBoard, depth - 1, alpha, beta, true);
+        //console.log(`move:${move.row} ${move.col} eval:${eval}`)
         minEval = Math.min(minEval, eval);
         beta = Math.min(beta, eval);
         if (beta <= alpha) {
@@ -84,7 +84,7 @@ function alphaBetaPruning(board, depth, alpha, beta, maximizingPlayer) {
 }
 
 function isGameOver(board){
-    if(checkDraw){
+    if(checkDraw(board)){
         return true;
     }
     // Check for a win
@@ -100,8 +100,8 @@ function isGameOver(board){
 function evaluate(board) {
   
     // Evaluation weights for different scenarios
-    const winScore = Infinity;
-    const gamma =3.5;
+    const winScore = 1000000000;
+    const gamma =5;
   
     // Check for a win
     if (isWin(board, aiPlayer)) {
@@ -116,7 +116,7 @@ function evaluate(board) {
     let s1 = countThreats(board, aiPlayer);
     let s2 = countThreats(board, opponentPlayer);
     score = s1 - gamma * s2;
-    console.log(`ai point:${s1}, player point:${s2}`);
+    //console.log(`ai point:${s1}, player point:${s2}`);
     //// Evaluate threats (potential winning moves) for AI player
     //score += countThreats(board, aiPlayer) * threatScore;
     //// Evaluate threats (potential winning moves) for opponent
@@ -196,7 +196,6 @@ function isWin(board, player) {
             }
         }
     }
-
     return false;
 }
 
@@ -205,17 +204,17 @@ function countThreats(board, player) {
 
     // Check rows for threats
     for (let row = 0; row < board.length; row++) {
-        for (let col = 0; col <= board.length - 5; col++) {
-            const sequence = board[row].slice(col, col + 5);
+        for (let col = 0; col <= board.length - 6; col++) {
+            const sequence = board[row].slice(col, col + 6);
             threatsCount+=PotentialThreat(sequence, player);
         }
     }
 
     // Check columns for threats
     for (let col = 0; col < board.length; col++) {
-        for (let row = 0; row <= board.length - 5; row++) {
+        for (let row = 0; row <= board.length - 6; row++) {
             const sequence = [];
-            for (let i = row; i < row + 5; i++) {
+            for (let i = row; i < row + 6; i++) {
                 sequence.push(board[i][col]);
                 }
             threatsCount+=PotentialThreat(sequence, player);
@@ -223,10 +222,10 @@ function countThreats(board, player) {
     }
 
     // Check diagonals (both directions) for threats
-    for (let row = 0; row <= board.length - 5; row++) {
-        for (let col = 0; col <= board.length - 5; col++) {
-            const sequence1 = [board[row][col], board[row + 1][col + 1], board[row + 2][col + 2], board[row + 3][col + 3], board[row + 4][col + 4]];
-            const sequence2 = [board[row + 4][col], board[row + 3][col + 1], board[row + 2][col + 2], board[row + 1][col + 3], board[row][col + 4]];
+    for (let row = 0; row <= board.length - 6; row++) {
+        for (let col = 0; col <= board.length - 6; col++) {
+            const sequence1 = [board[row][col], board[row + 1][col + 1], board[row + 2][col + 2], board[row + 3][col + 3], board[row + 4][col + 4], board[row + 5][col + 5]];
+            const sequence2 = [board[row + 5][col], board[row + 4][col + 1], board[row + 3][col + 2], board[row + 2][col + 3], board[row+1][col + 4], board[row][col + 5]];
             threatsCount+=PotentialThreat(sequence1, player);
             threatsCount+=PotentialThreat(sequence2, player);
         }
@@ -243,7 +242,7 @@ function PotentialThreat(sequence, player) {
         //4 stones potentially conncted in a row with or without block
         "_OOOO": 500000,
         //3 stones potentially conncted in a row without block
-        "_OOO_":80000,
+        "_OOO_":300000,
         //3 stones potentially conncted in a row with one block
         "XOOO_":10000,
         //2 stones potentially conncted in a row without block
@@ -257,6 +256,8 @@ function PotentialThreat(sequence, player) {
         let maxContinuousCount =0;
         let count =0;
         let bolckCount =0;
+        let blockIndexList =[];
+        var index=0;
         for(let stone of sequence){
             if(stone===player){
                 count++;
@@ -264,16 +265,18 @@ function PotentialThreat(sequence, player) {
                 maxContinuousCount = Math.max(maxContinuousCount, count);
                 count =0;
                 bolckCount++;
+                blockIndexList.push(index);
             }
+            index++;
         }
         maxContinuousCount = Math.max(maxContinuousCount, count);
-        if(maxContinuousCount==4){
+        if(maxContinuousCount==4 && !(sequence[0]===opponent && sequence[-1]===opponent) ){
             return pattern._OOOO;
         }
         if(maxContinuousCount==3 && bolckCount==0){
             return pattern._OOO_;
         }
-        if(maxContinuousCount==3 && bolckCount>=1 && !(sequence[0]===opponent && sequence[-1]===opponent) ){
+        if(maxContinuousCount==3 && bolckCount>=1 && !isWrapped(blockIndexList, maxContinuousCount)){
             return pattern.XOOO_;
         }
         if(maxContinuousCount==2 && bolckCount==0){
@@ -281,6 +284,12 @@ function PotentialThreat(sequence, player) {
         }
     }
     return pattern.rest;
+}
+
+function isWrapped(blockIndexList, maxContinuousCount){
+    const max = Math.max(...blockIndexList);
+    const min = Math.min(...blockIndexList);
+    return (max-min)>maxContinuousCount;
 }
 
 function countDefenses(board, player) {

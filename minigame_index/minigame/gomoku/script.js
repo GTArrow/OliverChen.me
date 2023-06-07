@@ -55,7 +55,7 @@ function handleGameBoardClick(event) {
     }
     if(row<=boardSize && col<=boardSize && row>=0 && col>=0){
         placeStone(row, col);
-        const aiMove = findBestMove(gameBoard,6);
+        const aiMove = findBestMove(gameBoard,2);
         console.log(aiMove);
 
         placeStone(aiMove.row, aiMove.col);
@@ -147,7 +147,7 @@ function placeStone(row, col) {
     }
   
     // Check for a draw
-    if (checkDraw()) {
+    if (checkDraw(gameBoard)) {
       gameState = 'draw';
       var msg ='The game ends in a draw!';
       $("#Lwinner").text(msg);
@@ -254,10 +254,10 @@ function checkWin(row, col) {
   }
   
   // Function to check for a draw condition
-  function checkDraw() {
+  function checkDraw(board) {
     for (let row = 0; row <= boardSize; row++) {
       for (let col = 0; col <= boardSize; col++) {
-        if (gameBoard[row][col] === null) {
+        if (board[row][col] === null) {
           return false; // If there's an empty position, the game is not a draw
         }
       }
