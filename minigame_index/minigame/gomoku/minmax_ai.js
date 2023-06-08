@@ -18,28 +18,27 @@ const pattern ={
     "rest":0,
 }
 
-function findBestMove(board, depth) {
-    let bestEval = -Infinity;
+function findBestMove(board, maxDepth, userMove) {
     let bestMove = null;
-    for (let move of generatePossibleMoves(board)) {
-        const newBoard = makeMove(board, move, aiPlayer);
-        const eval = alphaBetaPruning(newBoard, depth - 1, -Infinity, Infinity, false, move);
-        //console.log(`row:${move.row} col:${move.col} eval:${eval}`)
+    opponentWinningMove= [];
+    for (let depth = 1; depth <= maxDepth; depth++) {
+        const { move, eval } = alphaBetaPruning(board, depth, -Infinity, Infinity, true, userMove);
 
-        if (eval > bestEval) {
-            bestEval = eval;
-            bestMove = move;
+        if (eval === Infinity) {
+            // Found a winning move, no need to search further
+            return move;
         }
+
+        bestMove = move;
     }
     return bestMove;
 }
 
-function generatePossibleMoves(board) {
+function generatePossibleMoves(board, move, player) {
     const possibleMoves = [];
-  
     for (let row = 0; row < board.length; row++) {
       for (let col = 0; col < board[row].length; col++) {
-        if (board[row][col] !== null) {
+        if (board[row][col] === player) {
           // Check adjacent cells
           for (let i = -1; i <= 1; i++) {
             for (let j = -1; j <= 1; j++) {
@@ -55,10 +54,57 @@ function generatePossibleMoves(board) {
         }
       }
     }
-  
+    
+    let endStoneFromAllDirection = findAnotherEnd(board, move);
+    endStoneFromAllDirection.push(move);
+    for(let {row,col} of endStoneFromAllDirection){
+        for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
+            const newRow = row + i;
+            const newCol = col + j;
+            if (isValidCell(board, newRow, newCol) && board[newRow][newCol] === null) {
+                    if(!possibleMoves.find(item => item.col === newCol && item.row === newCol)){
+                        possibleMoves.push({ row: newRow, col: newCol });
+                    }
+                }
+            }
+        }
+    }
+
     return possibleMoves;
   }
-  
+
+function findAnotherEnd(board, move) {
+    const player = board[move.row][move.col];
+    const directions = [];
+    const rows = board.length;
+    const cols = board[0].length;
+
+    const dx = [-1, 0, 1, -1, 1, -1, 0, 1];
+    const dy = [-1, -1, -1, 0, 0, 1, 1, 1];
+
+    for (let i = 0; i < 8; i++) {
+        const endStones = [];
+        let currentRow = move.row + dy[i];
+        let currentCol = move.col + dx[i];
+
+        while (currentRow >= 0 && currentRow < rows && currentCol >= 0 && currentCol < cols) {
+            if (board[currentRow][currentCol] !== player) {
+                break;
+            }
+
+            endStones.push({ col: currentCol, row: currentRow });
+                currentRow += dy[i];
+                currentCol += dx[i];
+        }
+
+        if (endStones.length > 0) {
+            directions.push(endStones[endStones.length-1]);
+        }
+    }
+    return directions;
+}
+
 function isValidCell(board, row, col) {
     const rowCount = board.length;
     const colCount = board[0].length;
@@ -67,55 +113,65 @@ function isValidCell(board, row, col) {
 
 function makeMove(board, move, player){
     const {row,col} = move;
-    const newBoard = structuredClone(board);
-    newBoard[row][col] = player;
-    return newBoard;
+    board[row][col] = player;
+}
+
+function undoMove(board, move){
+    const {row,col} = move;
+    board[row][col] = null;
 }
 
 
 function alphaBetaPruning(board, depth, alpha, beta, maximizingPlayer, move) {
-    if (depth === 0 || isGameOver(board)) {
-      return evaluate(board,move);
+    if (depth === 0 || isGameOver(board, move)) {
+      return { eval: evaluate(board, move), move:move};
     }
-    if (maximizingPlayer) {
-      let maxEval = -Infinity;
-      for (let move of generatePossibleMoves(board)) {
-        const newBoard = makeMove(board, move, aiPlayer);
-        const eval = alphaBetaPruning(newBoard, depth - 1, alpha, beta, false, move);
-        maxEval = Math.max(maxEval, eval);
-        alpha = Math.max(alpha, eval);
+    let bestEval = maximizingPlayer ? -Infinity : Infinity;
+    let bestMove = null;
+    let otherInfinity =false;
+    let player = maximizingPlayer?aiPlayer:opponentPlayer;
+    for (let newMove of generatePossibleMoves(board, move, player)) {
+        makeMove(board, newMove, maximizingPlayer ? aiPlayer : opponentPlayer);
+        let { eval } = alphaBetaPruning(board, depth - 1, alpha, beta, !maximizingPlayer, newMove);
+        undoMove(board, newMove);
+        if(otherInfinity && eval!==-Infinity){
+            eval =Infinity;
+        }
+        if(eval===-Infinity){
+            otherInfinity =true;
+        }
+        if(!maximizingPlayer && eval===-Infinity && !opponentWinningMove.find(item => item.col === newMove.col && item.row === newMove.row)){
+            opponentWinningMove.push(newMove);
+        }
+        if (maximizingPlayer) {
+            if (eval > bestEval) {
+            bestEval = eval;
+            bestMove = newMove;
+            alpha = Math.max(alpha, eval);
+            }
+        } else {
+            if (eval < bestEval) {
+            bestEval = eval;
+            bestMove = newMove;
+            beta = Math.min(beta, eval);
+            }
+        }
+
         if (beta <= alpha) {
-          break;
+            break;
         }
-      }
-      return maxEval;
-    } else {
-      let minEval = Infinity;
-      for (let move of generatePossibleMoves(board)) {
-        const newBoard = makeMove(board, move, opponentPlayer);
-        const eval = alphaBetaPruning(newBoard, depth - 1, alpha, beta, true, move);
-        if(eval===-Infinity && !opponentWinningMove.find(item => item.col === move.col && item.row === move.row)){
-            opponentWinningMove.push(move);
-        }
-        //console.log(`move:${move.row} ${move.col} eval:${eval}`)
-        minEval = Math.min(minEval, eval);
-        beta = Math.min(beta, eval);
-        if (beta <= alpha) {
-          break;
-        }
-      }
-      return minEval;
     }
+    return { eval: bestEval, move: bestMove };
 }
 
-function isGameOver(board){
+function isGameOver(board, move){
     if(checkDraw(board)){
         return true;
     }
     // Check for a win
     const players = [aiPlayer, opponentPlayer];
     for (let player of players) {
-        if (isWin(board, player)) {
+        if (isWin(board, player, move)) {
             return true;
         }
     }
@@ -127,7 +183,7 @@ function evaluate(board, move) {
     // Evaluation weights for different scenarios
     //const winScore = 1000000000;
     const winScore = Infinity;
-    const gamma =5;
+    const gamma =1.5
   
     // Check for a win
     if (isWin(board, aiPlayer, move)) {
@@ -139,13 +195,13 @@ function evaluate(board, move) {
     let score = 0;
   
     
-    let s1 = countThreats(board, aiPlayer);
-    let s2 = countThreats(board, opponentPlayer);
-    score = s1 - gamma * s2;
-    //console.log(`ai point:${s1}, player point:${s2}`);
+    let s1 = countThreats(board, aiPlayer, move);
+    let s2 = countThreats(board, opponentPlayer, move);
+    score = gamma *s1 -  s2;
     // Return the final evaluation score
     return score;
 }
+
 function isWin(board, player, move) {
     const rowCount = board.length;
     const colCount = board[0].length;
@@ -321,6 +377,62 @@ function countThreats(board, player) {
     return threatsCount;
 }
 
+function countThreats(board, player, move) {
+    let threatsCount = 0;
+    const rowCount = board.length;
+    const colCount = board[0].length;
+    const { row, col } = move;
+
+    // Check rows for threats
+    for (let c = Math.max(0, col - 5); c <= Math.min(colCount - 6, col); c++) {
+        const sequence = board[row].slice(c, c + 6);
+        threatsCount += PotentialThreat(sequence, player);
+    }
+
+    // Check columns for threats
+    for (let r = Math.max(0, row - 5); r <= Math.min(rowCount - 6, row); r++) {
+        const sequence = [];
+        for (let i = r; i < r + 6; i++) {
+            sequence.push(board[i][col]);
+        }
+        threatsCount += PotentialThreat(sequence, player);
+    }
+
+    // Check diagonals (both directions) for threats
+    const startRow1 = Math.max(0, row - 5);
+    const endRow1 = Math.min(rowCount - 6, row);
+    const startCol1 = Math.max(0, col - 5);
+    const endCol1 = Math.min(colCount - 6, col);
+
+    for (let r = startRow1, c = startCol1; r <= endRow1 && c <= endCol1; r++, c++) {
+        const sequence1 = [
+            board[r][c],
+            board[r + 1][c + 1],
+            board[r + 2][c + 2],
+            board[r + 3][c + 3],
+            board[r + 4][c + 4],
+            board[r + 5][c + 5]
+        ];
+        threatsCount += PotentialThreat(sequence1, player);
+    }
+
+    for (let r = startRow1, c = endCol1; r <= endRow1 && c >= startCol1; r++, c--) {
+        const sequence2 = [
+            board[r + 5][c],
+            board[r + 4][c + 1],
+            board[r + 3][c + 2],
+            board[r + 2][c + 3],
+            board[r + 1][c + 4],
+            board[r][c + 5]
+        ];
+        threatsCount += PotentialThreat(sequence2, player);
+    }
+
+    return threatsCount;
+}
+
+
+
 function PotentialThreat(sequence, player) {
 //check the continuous stones and open ends
     const opponent =  player === aiPlayer ? opponentPlayer : aiPlayer;
@@ -354,7 +466,6 @@ function PotentialThreat(sequence, player) {
         let openEnd = leftOpenEnd(sequence, maxStartIndex, opponent) + rightOpenEnd(sequence, maxEndIndex, opponent);
 
         if(maxContinuousCount==4 && openEnd===2){
-            //console.log("_OOOO_")
             return pattern._OOOO_;
         }
         if(maxContinuousCount==4 && openEnd===1){

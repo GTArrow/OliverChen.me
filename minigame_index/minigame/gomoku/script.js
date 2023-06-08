@@ -80,18 +80,18 @@ function handleGameBoardClick(event) {
           disableClickEvents();
 
           setTimeout(() => {
-            var aiMove = findBestMove(gameBoard,1);
+            var aiMove = findBestMove(gameBoard,4, {row, col});
             if(aiMove===null){
               if(opponentWinningMove.length>0){
                 console.log(opponentWinningMove);
-                aiMove = opponentWinningMove[Math.floor(Math.random() * opponentWinningMove.length)];
+                aiMove = opponentWinningMove[0];
               }else{
                 const list = generatePossibleMoves(gameBoard);
                 aiMove = list[Math.floor(Math.random() * list.length)];
                 console.log("There is no way for ai to win, so AI goes randomly.")
               }
             }
-            //console.log(aiMove);
+            console.log(aiMove);
 
             placeStone(aiMove.row, aiMove.col);
             renderAllStone();
@@ -135,24 +135,27 @@ function initGameBoard(){
             gameBoardContainer.appendChild(cell);
         }
     }
-//   gameBoard = [  ['X', 'O', 'O', 'X', 'O', null, 'O', 'X', null, null, null, 'O', null, null, null, 'O'],
-//   [null, null, null, 'X', 'X', 'X', null, null, null, 'X', null, null, null, null, null, 'O'],
-//   ['O', null, null, null, null, null, 'X', null, 'X', 'O', null, 'O', null, 'X', null, null],
-//   ['O', 'X', null, 'O', 'X', null, null, null, null, 'O', 'O', 'O', null, null, 'X', null],
-//   [null, null, 'X', null, 'X', 'X', 'O', null, 'O', 'O', 'X', null, null, null, null, null],
-//   [null, 'O', null, null, 'X', 'O', 'O', null, null, null, null, 'O', null, null, 'X', 'O'],
-//   [null, null, null, null, null, null, null, 'X', null, null, null, null, null, null, null, 'X'],
-//   [null, null, null, null, 'X', 'X', null, 'X', 'X', null, null, 'X', null, null, null, null],
-//   [null, null, 'O', null, null, null, null, null, null, null, null, 'X', null, 'X', null, null],
-//   [null, null, null, 'X', 'O', null, null, null, 'O', null, null, null, null, null, null, 'O'],
-//   ['O', null, null, null, null, 'X', null, null, null, null, null, 'X', null, null, 'X', null],
-//   [null, null, 'O', null, null, null, null, null, null, null, null, null, 'O', null, null, null],
-//   [null, 'O', null, null, null, 'X', 'X', 'O', null, null, 'X', null, 'X', null, null, null],
-//   ['O', null, null, null, null, 'O', null, null, null, null, null, 'O', null, 'X', null, 'O'],
-//   [null, null, null, 'X', 'O', null, null, 'X', null, null, null, 'X', null, null, 'X', 'O'],
-//   [null, null, 'O', 'X', null, null, null, null, 'O', null, 'X', null, 'O', null, null, 'O']
+//   gameBoard = [  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+//   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+//   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+//   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+//   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+//   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+//   [null, null, null, null, null, null, null, null, 'O', null, null, null, 'O', null, null, 'O'],
+//   [null, null, null, null, null, null, null, null, null, 'X', null, 'O',  'X',  'O', 'O', 'O'],
+//   [null, null, null, null, null, null, null, null, null, 'O', 'X',  'X',  'X',  'X', 'O', null],
+//   [null, null, null, null, null, null, null, null, null, null, 'O', 'X',  'X',  'X', null, null],
+//   [null, null, null, null, null, null, null, null,  'X', 'O', 'X',  'X',  'X',  'X',  'O', null],
+//   [null, null, null, null, null, null, null, null,  'O', 'X', 'X',  'X',  'O',  'O', null, null],
+//   [null, null, null, null, null, null, null, null,  'O', 'O', null,  'O', null, null,  'X', null],
+//   [null, null, null, null, null, null, null, null, null, 'O', null, null, null, null, null, null],
+//   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+//   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
 // ];
 // renderAllStone();
+
+    //gameBoard[7][8] ='O';
+    //renderAllStone();
 }
 
 function renderAllStone(){
