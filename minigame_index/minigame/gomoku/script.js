@@ -64,7 +64,7 @@ function handleGameBoardClick(event) {
       if(opacity!==undefined && opacity!==null && parseFloat(opacity)===0.5){
         isFirstClick =false;
       }
-      
+
       if(isFirstClick){
           if (gameState !== 'ongoing' || gameBoard[row][col] !== null) {
             return; // Ignore the move if the game is not ongoing or the position is already occupied
@@ -96,11 +96,10 @@ function handleGameBoardClick(event) {
             placeStone(aiMove.row, aiMove.col);
             renderAllStone();
             enableClickEvents();
-        }, 0);
-
-        // Reset for the next stone placement
-        isFirstClick = true;
-        clearTimeout(timer);
+                // Reset for the next stone placement
+            isFirstClick = true;
+            clearTimeout(timer);
+        }, 3);
       }
     }
   }
@@ -136,24 +135,24 @@ function initGameBoard(){
             gameBoardContainer.appendChild(cell);
         }
     }
-//    gameBoard = [  ['X', 'O', 'O', 'X', 'O', null, 'O', 'X', null, null, null, 'O', null, null, null, 'O'],
-//    [null, null, null, 'X', 'X', 'X', null, null, null, 'X', null, null, null, null, null, 'O'],
-//    ['O', null, null, null, null, null, 'X', null, 'X', 'O', null, 'O', null, 'X', null, null],
-//    ['O', 'X', null, 'O', 'X', null, null, null, null, 'O', 'O', 'O', null, null, 'X', null],
-//    [null, null, 'X', null, 'X', 'X', 'O', null, 'O', 'O', 'X', null, null, null, null, null],
-//    [null, 'O', null, null, 'X', 'O', 'O', null, null, null, null, 'O', null, null, 'X', 'O'],
-//    [null, null, null, null, null, null, null, 'X', null, null, null, null, null, null, null, 'X'],
-//    [null, null, null, null, 'X', 'X', null, 'X', 'X', null, null, 'X', null, null, null, null],
-//    [null, null, 'O', null, null, null, null, null, null, null, null, 'X', null, 'X', null, null],
-//    [null, null, null, 'X', 'O', null, null, null, 'O', null, null, null, null, null, null, 'O'],
-//    ['O', null, null, null, null, 'X', null, null, null, null, null, 'X', null, null, 'X', null],
-//    [null, null, 'O', null, null, null, null, null, null, null, null, null, 'O', null, null, null],
-//    [null, 'O', null, null, null, 'X', 'X', 'O', null, null, 'X', null, 'X', null, null, null],
-//    ['O', null, null, null, null, 'O', null, null, null, null, null, 'O', null, 'X', null, 'O'],
-//    [null, null, null, 'X', 'O', null, null, 'X', null, null, null, 'X', null, null, 'X', 'O'],
-//    [null, null, 'O', 'X', null, null, null, null, 'O', null, 'X', null, 'O', null, null, 'O']
-//  ];
-//  renderAllStone();
+    gameBoard = [  ['X', 'O', 'O', 'X', 'O', null, 'O', 'X', null, null, null, 'O', null, null, null, 'O'],
+    [null, null, null, 'X', 'X', 'X', null, null, null, 'X', null, null, null, null, null, 'O'],
+    ['O', null, null, null, null, null, 'X', null, 'X', 'O', null, 'O', null, 'X', null, null],
+    ['O', 'X', null, 'O', 'X', null, null, null, null, 'O', 'O', 'O', null, null, 'X', null],
+    [null, null, 'X', null, 'X', 'X', 'O', null, 'O', 'O', 'X', null, null, null, null, null],
+    [null, 'O', null, null, 'X', 'O', 'O', null, null, null, null, 'O', null, null, 'X', 'O'],
+    [null, null, null, null, null, null, null, 'X', null, null, null, null, null, null, null, 'X'],
+    [null, null, null, null, 'X', 'X', null, 'X', 'X', null, null, 'X', null, null, null, null],
+    [null, null, 'O', null, null, null, null, null, null, null, null, 'X', null, 'X', null, null],
+    [null, null, null, 'X', 'O', null, null, null, 'O', null, null, null, null, null, null, 'O'],
+    ['O', null, null, null, null, 'X', null, null, null, null, null, 'X', null, null, 'X', null],
+    [null, null, 'O', null, null, null, null, null, null, null, null, null, 'O', null, null, null],
+    [null, 'O', null, null, null, 'X', 'X', 'O', null, null, 'X', null, 'X', null, null, null],
+    ['O', null, null, null, null, 'O', null, null, null, null, null, 'O', null, 'X', null, 'O'],
+    [null, null, null, 'X', 'O', null, null, 'X', null, null, null, 'X', null, null, 'X', 'O'],
+    [null, null, 'O', 'X', null, null, null, null, 'O', null, 'X', null, 'O', null, null, 'O']
+  ];
+  renderAllStone();
 }
 
 function renderAllStone(){
