@@ -80,7 +80,7 @@ function handleGameBoardClick(event) {
           disableClickEvents();
 
           setTimeout(() => {
-            var aiMove = findBestMove(gameBoard,2);
+            var aiMove = findBestMove(gameBoard,1);
             if(aiMove===null){
               if(opponentWinningMove.length>0){
                 console.log(opponentWinningMove);
