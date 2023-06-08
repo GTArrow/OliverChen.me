@@ -135,24 +135,24 @@ function initGameBoard(){
             gameBoardContainer.appendChild(cell);
         }
     }
-    gameBoard = [  ['X', 'O', 'O', 'X', 'O', null, 'O', 'X', null, null, null, 'O', null, null, null, 'O'],
-    [null, null, null, 'X', 'X', 'X', null, null, null, 'X', null, null, null, null, null, 'O'],
-    ['O', null, null, null, null, null, 'X', null, 'X', 'O', null, 'O', null, 'X', null, null],
-    ['O', 'X', null, 'O', 'X', null, null, null, null, 'O', 'O', 'O', null, null, 'X', null],
-    [null, null, 'X', null, 'X', 'X', 'O', null, 'O', 'O', 'X', null, null, null, null, null],
-    [null, 'O', null, null, 'X', 'O', 'O', null, null, null, null, 'O', null, null, 'X', 'O'],
-    [null, null, null, null, null, null, null, 'X', null, null, null, null, null, null, null, 'X'],
-    [null, null, null, null, 'X', 'X', null, 'X', 'X', null, null, 'X', null, null, null, null],
-    [null, null, 'O', null, null, null, null, null, null, null, null, 'X', null, 'X', null, null],
-    [null, null, null, 'X', 'O', null, null, null, 'O', null, null, null, null, null, null, 'O'],
-    ['O', null, null, null, null, 'X', null, null, null, null, null, 'X', null, null, 'X', null],
-    [null, null, 'O', null, null, null, null, null, null, null, null, null, 'O', null, null, null],
-    [null, 'O', null, null, null, 'X', 'X', 'O', null, null, 'X', null, 'X', null, null, null],
-    ['O', null, null, null, null, 'O', null, null, null, null, null, 'O', null, 'X', null, 'O'],
-    [null, null, null, 'X', 'O', null, null, 'X', null, null, null, 'X', null, null, 'X', 'O'],
-    [null, null, 'O', 'X', null, null, null, null, 'O', null, 'X', null, 'O', null, null, 'O']
-  ];
-  renderAllStone();
+//   gameBoard = [  ['X', 'O', 'O', 'X', 'O', null, 'O', 'X', null, null, null, 'O', null, null, null, 'O'],
+//   [null, null, null, 'X', 'X', 'X', null, null, null, 'X', null, null, null, null, null, 'O'],
+//   ['O', null, null, null, null, null, 'X', null, 'X', 'O', null, 'O', null, 'X', null, null],
+//   ['O', 'X', null, 'O', 'X', null, null, null, null, 'O', 'O', 'O', null, null, 'X', null],
+//   [null, null, 'X', null, 'X', 'X', 'O', null, 'O', 'O', 'X', null, null, null, null, null],
+//   [null, 'O', null, null, 'X', 'O', 'O', null, null, null, null, 'O', null, null, 'X', 'O'],
+//   [null, null, null, null, null, null, null, 'X', null, null, null, null, null, null, null, 'X'],
+//   [null, null, null, null, 'X', 'X', null, 'X', 'X', null, null, 'X', null, null, null, null],
+//   [null, null, 'O', null, null, null, null, null, null, null, null, 'X', null, 'X', null, null],
+//   [null, null, null, 'X', 'O', null, null, null, 'O', null, null, null, null, null, null, 'O'],
+//   ['O', null, null, null, null, 'X', null, null, null, null, null, 'X', null, null, 'X', null],
+//   [null, null, 'O', null, null, null, null, null, null, null, null, null, 'O', null, null, null],
+//   [null, 'O', null, null, null, 'X', 'X', 'O', null, null, 'X', null, 'X', null, null, null],
+//   ['O', null, null, null, null, 'O', null, null, null, null, null, 'O', null, 'X', null, 'O'],
+//   [null, null, null, 'X', 'O', null, null, 'X', null, null, null, 'X', null, null, 'X', 'O'],
+//   [null, null, 'O', 'X', null, null, null, null, 'O', null, 'X', null, 'O', null, null, 'O']
+// ];
+// renderAllStone();
 }
 
 function renderAllStone(){
