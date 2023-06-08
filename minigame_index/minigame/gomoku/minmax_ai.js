@@ -23,7 +23,7 @@ function findBestMove(board, depth) {
     let bestMove = null;
     for (let move of generatePossibleMoves(board)) {
         const newBoard = makeMove(board, move, aiPlayer);
-        const eval = alphaBetaPruning(newBoard, depth - 1, -Infinity, Infinity, false);
+        const eval = alphaBetaPruning(newBoard, depth - 1, -Infinity, Infinity, false, move);
         //console.log(`row:${move.row} col:${move.col} eval:${eval}`)
 
         if (eval > bestEval) {
@@ -73,15 +73,15 @@ function makeMove(board, move, player){
 }
 
 
-function alphaBetaPruning(board, depth, alpha, beta, maximizingPlayer) {
-    if (depth === 0 || isGameOver(board)) {
-      return evaluate(board);
+function alphaBetaPruning(board, depth, alpha, beta, maximizingPlayer, move) {
+    if (depth === 0 || isGameOver(board, move)) {
+      return evaluate(board,move);
     }
     if (maximizingPlayer) {
       let maxEval = -Infinity;
       for (let move of generatePossibleMoves(board)) {
         const newBoard = makeMove(board, move, aiPlayer);
-        const eval = alphaBetaPruning(newBoard, depth - 1, alpha, beta, false);
+        const eval = alphaBetaPruning(newBoard, depth - 1, alpha, beta, false, move);
         maxEval = Math.max(maxEval, eval);
         alpha = Math.max(alpha, eval);
         if (beta <= alpha) {
@@ -93,7 +93,7 @@ function alphaBetaPruning(board, depth, alpha, beta, maximizingPlayer) {
       let minEval = Infinity;
       for (let move of generatePossibleMoves(board)) {
         const newBoard = makeMove(board, move, opponentPlayer);
-        const eval = alphaBetaPruning(newBoard, depth - 1, alpha, beta, true);
+        const eval = alphaBetaPruning(newBoard, depth - 1, alpha, beta, true, move);
         if(eval===-Infinity && !opponentWinningMove.find(item => item.col === move.col && item.row === move.row)){
             opponentWinningMove.push(move);
         }
@@ -108,21 +108,21 @@ function alphaBetaPruning(board, depth, alpha, beta, maximizingPlayer) {
     }
 }
 
-function isGameOver(board){
+function isGameOver(board, move){
     if(checkDraw(board)){
         return true;
     }
     // Check for a win
     const players = [aiPlayer, opponentPlayer];
     for (let player of players) {
-        if (isWin(board, player)) {
+        if (isWin(board, player, move)) {
             return true;
         }
     }
     return false;
 }
 
-function evaluate(board) {
+function evaluate(board, move) {
   
     // Evaluation weights for different scenarios
     //const winScore = 1000000000;
@@ -130,9 +130,9 @@ function evaluate(board) {
     const gamma =1.5;
   
     // Check for a win
-    if (isWin(board, aiPlayer)) {
+    if (isWin(board, aiPlayer, move)) {
       return winScore;
-    } else if (isWin(board, opponentPlayer)) {
+    } else if (isWin(board, opponentPlayer, move)) {
       return -winScore;
     }
   
@@ -146,74 +146,145 @@ function evaluate(board) {
     // Return the final evaluation score
     return score;
 }
-
-function isWin(board, player) {
+function isWin(board, player, move) {
     const rowCount = board.length;
     const colCount = board[0].length;
+    const { row, col } = move;
 
     // Check rows for a win
-    for (let row = 0; row < rowCount; row++) {
-        for (let col = 0; col <= colCount - 5; col++) {
-            let foundWin = true;
-            for (let i = 0; i < 5; i++) {
-                if (board[row][col + i] !== player) {
-                    foundWin = false;
-                    break;
-                }
+    for (let c = Math.max(0, col - 4); c <= Math.min(colCount - 5, col); c++) {
+        let foundWin = true;
+        for (let i = 0; i < 5; i++) {
+            if (board[row][c + i] !== player) {
+                foundWin = false;
+                break;
             }
-            if (foundWin) {
-                return true;
-            }
+        }
+        if (foundWin) {
+            return true;
         }
     }
 
     // Check columns for a win
-    for (let col = 0; col < colCount; col++) {
-        for (let row = 0; row <= rowCount - 5; row++) {
-            let foundWin = true;
-            for (let i = 0; i < 5; i++) {
-                    if (board[row + i][col] !== player) {
-                    foundWin = false;
-                    break;
-                }
+    for (let r = Math.max(0, row - 4); r <= Math.min(rowCount - 5, row); r++) {
+        let foundWin = true;
+        for (let i = 0; i < 5; i++) {
+            if (board[r + i][col] !== player) {
+                foundWin = false;
+                break;
             }
-            if (foundWin) {
-                return true;
-            }
+        }
+        if (foundWin) {
+            return true;
         }
     }
 
     // Check diagonals (both directions) for a win
-    for (let row = 0; row <= rowCount - 5; row++) {
-        for (let col = 0; col <= colCount - 5; col++) {
-            // Check diagonal (top-left to bottom-right)
-            let foundWin1 = true;
-            for (let i = 0; i < 5; i++) {
-                    if (board[row + i][col + i] !== player) {
-                    foundWin1 = false;
-                    break;
-                }
-            }
-            if (foundWin1) {
-                return true;
-            }
+    const startRow1 = Math.max(0, row - 4);
+    const endRow1 = Math.min(rowCount - 5, row);
+    const startCol1 = Math.max(0, col - 4);
+    const endCol1 = Math.min(colCount - 5, col);
 
-            // Check diagonal (bottom-left to top-right)
-            let foundWin2 = true;
-            for (let i = 0; i < 5; i++) {
-                    if (board[row + 4 - i][col + i] !== player) {
-                    foundWin2 = false;
-                    break;
-                }
-            }
-            if (foundWin2) {
-                return true;
+    for (let r = startRow1, c = startCol1; r <= endRow1 && c <= endCol1; r++, c++) {
+        let foundWin1 = true;
+        for (let i = 0; i < 5; i++) {
+            if (board[r + i][c + i] !== player) {
+                foundWin1 = false;
+                break;
             }
         }
+        if (foundWin1) {
+            return true;
+        }
     }
+
+    const startRow2 = Math.max(0, row - 4);
+    const endRow2 = Math.min(rowCount - 5, row);
+    const startCol2 = Math.max(4, col);
+    const endCol2 = Math.min(colCount - 1, col + 4);
+
+    for (let r = startRow2, c = startCol2; r <= endRow2 && c >= endCol2; r++, c--) {
+        let foundWin2 = true;
+        for (let i = 0; i < 5; i++) {
+            if (board[r + i][c - i] !== player) {
+                foundWin2 = false;
+                break;
+            }
+        }
+        if (foundWin2) {
+            return true;
+        }
+    }
+
     return false;
 }
-
+//function isWin(board, player) {
+//    const rowCount = board.length;
+//    const colCount = board[0].length;
+//
+//    // Check rows for a win
+//    for (let row = 0; row < rowCount; row++) {
+//        for (let col = 0; col <= colCount - 5; col++) {
+//            let foundWin = true;
+//            for (let i = 0; i < 5; i++) {
+//                if (board[row][col + i] !== player) {
+//                    foundWin = false;
+//                    break;
+//                }
+//            }
+//            if (foundWin) {
+//                return true;
+//            }
+//        }
+//    }
+//
+//    // Check columns for a win
+//    for (let col = 0; col < colCount; col++) {
+//        for (let row = 0; row <= rowCount - 5; row++) {
+//            let foundWin = true;
+//            for (let i = 0; i < 5; i++) {
+//                    if (board[row + i][col] !== player) {
+//                    foundWin = false;
+//                    break;
+//                }
+//            }
+//            if (foundWin) {
+//                return true;
+//            }
+//        }
+//    }
+//
+//    // Check diagonals (both directions) for a win
+//    for (let row = 0; row <= rowCount - 5; row++) {
+//        for (let col = 0; col <= colCount - 5; col++) {
+//            // Check diagonal (top-left to bottom-right)
+//            let foundWin1 = true;
+//            for (let i = 0; i < 5; i++) {
+//                    if (board[row + i][col + i] !== player) {
+//                    foundWin1 = false;
+//                    break;
+//                }
+//            }
+//            if (foundWin1) {
+//                return true;
+//            }
+//
+//            // Check diagonal (bottom-left to top-right)
+//            let foundWin2 = true;
+//            for (let i = 0; i < 5; i++) {
+//                    if (board[row + 4 - i][col + i] !== player) {
+//                    foundWin2 = false;
+//                    break;
+//                }
+//            }
+//            if (foundWin2) {
+//                return true;
+//            }
+//        }
+//    }
+//    return false;
+//}
+//
 function countThreats(board, player) {
     let threatsCount = 0;
 
