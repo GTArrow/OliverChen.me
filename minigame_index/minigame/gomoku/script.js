@@ -9,7 +9,6 @@ if(smallScreen){
 const boardPadding =20;
 
 var gameBoard = []
-initGameBoard();
 
 // Players
 //X:White O:black
@@ -20,6 +19,12 @@ let currentPlayer = 0;
 let gameState = 'ongoing';
 
 var winList = [];
+var opponentWinningMove =[];
+
+initGameBoard();
+
+let isFirstClick = true; // Flag to track the first click
+let timer; // Timer to detect the double-click
 
 function handleGameBoardClick(event) {
     if (gameState !== 'ongoing') {
@@ -54,23 +59,71 @@ function handleGameBoardClick(event) {
       return;
     }
     if(row<=boardSize && col<=boardSize && row>=0 && col>=0){
-        placeStone(row, col);
-        renderAllStone();
 
-        setTimeout(() => {
-          var aiMove = findBestMove(gameBoard,2);
-          if(aiMove===null){
-            const list = generatePossibleMoves(gameBoard);
-            aiMove = list[Math.floor(Math.random() * list.length)];
-            console.log("There is no way for ai to win, so AI goes randomly.")
+      var opacity = $(`.row${row}_col${col}`).css('opacity');
+      if(opacity!==undefined && opacity!==null && parseFloat(opacity)===0.5){
+        isFirstClick =false;
+      }
+      
+      if(isFirstClick){
+          if (gameState !== 'ongoing' || gameBoard[row][col] !== null) {
+            return; // Ignore the move if the game is not ongoing or the position is already occupied
           }
-          //console.log(aiMove);
-
-          placeStone(aiMove.row, aiMove.col);
+          gameBoard[row][col] = players[currentPlayer];
           renderAllStone();
-      }, 0);
+          gameBoard[row][col] = null;
+          $(`.row${row}_col${col}`).css("opacity", 0.5);
+
+        }else{
+          placeStone(row, col);
+          renderAllStone();
+          disableClickEvents();
+
+          setTimeout(() => {
+            var aiMove = findBestMove(gameBoard,2);
+            if(aiMove===null){
+              if(opponentWinningMove.length>0){
+                console.log(opponentWinningMove);
+                aiMove = opponentWinningMove[Math.floor(Math.random() * opponentWinningMove.length)];
+              }else{
+                const list = generatePossibleMoves(gameBoard);
+                aiMove = list[Math.floor(Math.random() * list.length)];
+                console.log("There is no way for ai to win, so AI goes randomly.")
+              }
+            }
+            //console.log(aiMove);
+
+            placeStone(aiMove.row, aiMove.col);
+            renderAllStone();
+            enableClickEvents();
+        }, 0);
+
+        // Reset for the next stone placement
+        isFirstClick = true;
+        clearTimeout(timer);
+      }
     }
   }
+
+// Disable click events
+function disableClickEvents() {
+  // Get the elements or container where you want to disable click events
+  const element = document.getElementById('game-board');
+  element.addEventListener('click', blockClickEvent);
+
+}
+
+// Block click event
+function blockClickEvent(event) {
+  event.stopPropagation();
+  event.preventDefault();
+}
+
+// Enable click events
+function enableClickEvents() {
+  const element = document.getElementById('game-board');
+  element.removeEventListener('click', blockClickEvent);
+}
 
 function initGameBoard(){
     for (let i = 0; i <= boardSize; i++) {
@@ -83,6 +136,24 @@ function initGameBoard(){
             gameBoardContainer.appendChild(cell);
         }
     }
+//    gameBoard = [  ['X', 'O', 'O', 'X', 'O', null, 'O', 'X', null, null, null, 'O', null, null, null, 'O'],
+//    [null, null, null, 'X', 'X', 'X', null, null, null, 'X', null, null, null, null, null, 'O'],
+//    ['O', null, null, null, null, null, 'X', null, 'X', 'O', null, 'O', null, 'X', null, null],
+//    ['O', 'X', null, 'O', 'X', null, null, null, null, 'O', 'O', 'O', null, null, 'X', null],
+//    [null, null, 'X', null, 'X', 'X', 'O', null, 'O', 'O', 'X', null, null, null, null, null],
+//    [null, 'O', null, null, 'X', 'O', 'O', null, null, null, null, 'O', null, null, 'X', 'O'],
+//    [null, null, null, null, null, null, null, 'X', null, null, null, null, null, null, null, 'X'],
+//    [null, null, null, null, 'X', 'X', null, 'X', 'X', null, null, 'X', null, null, null, null],
+//    [null, null, 'O', null, null, null, null, null, null, null, null, 'X', null, 'X', null, null],
+//    [null, null, null, 'X', 'O', null, null, null, 'O', null, null, null, null, null, null, 'O'],
+//    ['O', null, null, null, null, 'X', null, null, null, null, null, 'X', null, null, 'X', null],
+//    [null, null, 'O', null, null, null, null, null, null, null, null, null, 'O', null, null, null],
+//    [null, 'O', null, null, null, 'X', 'X', 'O', null, null, 'X', null, 'X', null, null, null],
+//    ['O', null, null, null, null, 'O', null, null, null, null, null, 'O', null, 'X', null, 'O'],
+//    [null, null, null, 'X', 'O', null, null, 'X', null, null, null, 'X', null, null, 'X', 'O'],
+//    [null, null, 'O', 'X', null, null, null, null, 'O', null, 'X', null, 'O', null, null, 'O']
+//  ];
+//  renderAllStone();
 }
 
 function renderAllStone(){
@@ -209,6 +280,7 @@ function checkWin(row, col) {
     if (count >= 5) {
       winList =winningList;
       return true;
+      
     }
   
     // Check diagonally (top-left to bottom-right)
@@ -282,5 +354,6 @@ function checkWin(row, col) {
     $("#Lwinner").hide();
     gameState = 'ongoing';
     winList =[];
+    opponentWinningMove= [];
     currentPlayer =0;
   }

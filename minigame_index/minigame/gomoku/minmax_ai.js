@@ -1,6 +1,23 @@
 const aiPlayer = 'O'; //Black
 const opponentPlayer = 'X'; //White
 
+const pattern ={
+    //4 stones potentially conncted in a row with 2 open ends
+    "_OOOO_": 1000000,
+    //4 stones potentially conncted in a row with 1 open end
+    "XOOOO_":1000000,
+    //3 stones potentially conncted in a row with two open ends
+    "_OOO_":1000,
+    //3 stones potentially conncted in a row with one open end
+    "XOOO_":10,
+    //2 stones potentially conncted in a row with two open ends
+    "_OO_":5,
+    //2 stones potentially conncted in a row with one open end
+    "XOO_":2,
+    //else
+    "rest":0,
+}
+
 function findBestMove(board, depth) {
     let bestEval = -Infinity;
     let bestMove = null;
@@ -17,30 +34,35 @@ function findBestMove(board, depth) {
     return bestMove;
 }
 
-
 function generatePossibleMoves(board) {
     const possibleMoves = [];
-    const MoveTaken = [];
-    for (let curRow = 0; curRow < board.length; curRow++) {
-        for (let curCol = 0; curCol < board[curRow].length; curCol++) {
-            if (board[curRow][curCol] != null) {
-                MoveTaken.push({ curRow, curCol });
+  
+    for (let row = 0; row < board.length; row++) {
+      for (let col = 0; col < board[row].length; col++) {
+        if (board[row][col] !== null) {
+          // Check adjacent cells
+          for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
+              const newRow = row + i;
+              const newCol = col + j;
+  
+              // Check if adjacent cell is valid and empty
+              if (isValidCell(board, newRow, newCol) && board[newRow][newCol] === null) {
+                possibleMoves.push({ row: newRow, col: newCol });
+              }
             }
+          }
         }
+      }
     }
-    for(let move of MoveTaken){
-        var {curRow, curCol} =move;
-        for(let row=curRow-1; row<=curRow+1;row++){
-            for(let col=curCol-1; col<=curCol+1;col++){
-                if (row>=0 && row<board.length && col>=0 && col<board.length  && 
-                    board[row][col] === null && !possibleMoves.includes({ row, col })) {
-                    possibleMoves.push({ row, col });
-                }
-            }
-        }
-    }
-
+  
     return possibleMoves;
+  }
+  
+function isValidCell(board, row, col) {
+    const rowCount = board.length;
+    const colCount = board[0].length;
+    return row >= 0 && row < rowCount && col >= 0 && col < colCount;
 }
 
 function makeMove(board, move, player){
@@ -72,6 +94,9 @@ function alphaBetaPruning(board, depth, alpha, beta, maximizingPlayer) {
       for (let move of generatePossibleMoves(board)) {
         const newBoard = makeMove(board, move, opponentPlayer);
         const eval = alphaBetaPruning(newBoard, depth - 1, alpha, beta, true);
+        if(eval===-Infinity && !opponentWinningMove.find(item => item.col === move.col && item.row === move.row)){
+            opponentWinningMove.push(move);
+        }
         //console.log(`move:${move.row} ${move.col} eval:${eval}`)
         minEval = Math.min(minEval, eval);
         beta = Math.min(beta, eval);
@@ -102,7 +127,7 @@ function evaluate(board) {
     // Evaluation weights for different scenarios
     //const winScore = 1000000000;
     const winScore = Infinity;
-    const gamma =5;
+    const gamma =1.5;
   
     // Check for a win
     if (isWin(board, aiPlayer)) {
@@ -118,17 +143,6 @@ function evaluate(board) {
     let s2 = countThreats(board, opponentPlayer);
     score = s1 - gamma * s2;
     //console.log(`ai point:${s1}, player point:${s2}`);
-    //// Evaluate threats (potential winning moves) for AI player
-    //score += countThreats(board, aiPlayer) * threatScore;
-    //// Evaluate threats (potential winning moves) for opponent
-    //score -= countThreats(board, opponentPlayer) * threatScore;
-    //console.log(score);
-    //// Evaluate defensive moves to block opponent's threats
-    //score += countDefenses(board, aiPlayer) * defenseScore;
-    //console.log(score);
-    //// Evaluate opponent's defensive moves to block AI's threats
-    //score -= countDefenses(board, opponentPlayer) * defenseScore;
-    //console.log(score);
     // Return the final evaluation score
     return score;
 }
@@ -236,64 +250,87 @@ function countThreats(board, player) {
 }
 
 function PotentialThreat(sequence, player) {
-// Check if the sequence contains the player's stones with an empty space at the beginning or end
-//return sequence.includes(player) && (sequence[0] === null || sequence[4] === null);
-//check if there is a potential three stones
-    const pattern ={
-        //4 stones potentially conncted in a row with or without block
-        "_OOOO": 1000000,
-        //3 stones potentially conncted in a row without block
-        "_OOO_":300000,
-        //3 stones potentially conncted in a row with one block
-        "XOOO_":10000,
-        //2 stones potentially conncted in a row without block
-        "_OO__":1000,
-        //else
-        "rest":0,
-    }
+//check the continuous stones and open ends
     const opponent =  player === aiPlayer ? opponentPlayer : aiPlayer;
     if(sequence.includes(player)){
         //count for continuous stones
         let maxContinuousCount =0;
         let count =0;
-        let bolckCount =0;
-        let spaceCount =0;
-        let blockIndexList =[];
-        var index=0;
-        for(let stone of sequence){
+        let maxStartIndex=0; let maxEndIndex=0;
+        let i=0, j=0;
+        while(i<sequence.length && j<sequence.length){
+            var stone = sequence[j];
             if(stone===player){
                 count++;
-            }else if(stone===opponent){
-                maxContinuousCount = Math.max(maxContinuousCount, count);
-                count =0;
-                bolckCount++;
-                blockIndexList.push(index);
+                j++;
             }else{
-                spaceCount++;
+                if(count>maxContinuousCount){
+                    maxContinuousCount =count;
+                    maxStartIndex =i;
+                    maxEndIndex =j;
+                }
+                count=0
+                j++;
+                i=j;
             }
-            index++;
         }
-        maxContinuousCount = Math.max(maxContinuousCount, count);
-        if(maxContinuousCount==4 && spaceCount ==0 && !(sequence[0]===opponent && sequence[-1]===opponent) ){
-            return pattern._OOOO;
+        if(count>maxContinuousCount){
+            maxContinuousCount =count;
+            maxStartIndex =i;
+            maxEndIndex =j;
         }
-        if(maxContinuousCount==3 && bolckCount==0){
+        let openEnd = leftOpenEnd(sequence, maxStartIndex, opponent) + rightOpenEnd(sequence, maxEndIndex, opponent);
+
+        if(maxContinuousCount==4 && openEnd===2){
+            //console.log("_OOOO_")
+            return pattern._OOOO_;
+        }
+        if(maxContinuousCount==4 && openEnd===1){
+            //console.log("XOOOO_")
+            return pattern.XOOOO_;
+        }
+        if(maxContinuousCount==3 && openEnd===2){
+            //console.log("_OOO_")
             return pattern._OOO_;
         }
-        if(maxContinuousCount==3 && bolckCount>=1 && !isWrapped(blockIndexList, maxContinuousCount)){
+        if(maxContinuousCount==3 && openEnd===1){
+            //console.log("XOOO_")
             return pattern.XOOO_;
         }
-        if(maxContinuousCount==2 && bolckCount==0){
-            return pattern._OO__;
+        if(maxContinuousCount==2 && openEnd===2){
+            //console.log("_OO_")
+            return pattern._OO_;
+        }
+        if(maxContinuousCount==2 && openEnd===1){
+            //console.log("XOO_")
+            return pattern.XOO_;
         }
     }
     return pattern.rest;
 }
 
-function isWrapped(blockIndexList, maxContinuousCount){
-    const max = Math.max(...blockIndexList);
-    const min = Math.min(...blockIndexList);
-    return (max-min)>maxContinuousCount;
+function leftOpenEnd(sequence, maxStartIndex, block){
+    if(maxStartIndex === 0){
+        return 0;
+    }
+    for(let index =0;index<maxStartIndex;index++){
+        if(sequence[index]===block){
+            return 0;
+        }
+    }
+    return 1;
+}
+
+function rightOpenEnd(sequence, maxEndIndex, block){
+    if(maxEndIndex === sequence.length){
+        return 0;
+    }
+    for(let index =maxEndIndex;index<sequence.length;index++){
+        if(sequence[index]===block){
+            return 0;
+        }
+    }
+    return 1;
 }
 
 function countDefenses(board, player) {
