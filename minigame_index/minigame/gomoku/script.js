@@ -80,7 +80,7 @@ function handleGameBoardClick(event) {
           disableClickEvents();
 
           setTimeout(() => {
-            var aiMove = findBestMove(gameBoard,2, {row, col});
+            var aiMove = findBestMove(gameBoard,4, {row, col});
             if(aiMove===null){
               if(opponentWinningMove.length>0){
                 console.log(opponentWinningMove);
@@ -135,24 +135,24 @@ function initGameBoard(){
             gameBoardContainer.appendChild(cell);
         }
     }
- //  gameBoard = [  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
- //  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
- //  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
- //  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
- //  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
- //  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
- //  [null, null, null, null, null, null, null, null, 'O', null, null, null, null, null, null, 'O'],
- //  [null, null, null, null, null, null, null, null, null, 'X', null, 'O',  'X',  'O', 'O', 'O'],
- //  [null, null, null, null, null, null, null, null, null, 'O', 'X',  'X',  'X',  'X', 'O', null],
- //  [null, null, null, null, null, null, null, null, null, null, 'O', 'X',  'X',  'X', null, null],
- //  [null, null, null, null, null, null, null, null,  'X', 'O', 'X',  'X',  'X',  'X',  'O', null],
- //  [null, null, null, null, null, null, null, null,  'O', 'X', 'X',  'X',  'O',  'O', null, null],
- //  [null, null, null, null, null, null, null, null,  'O', 'O', null,  'O', null, null,  'X', null],
- //  [null, null, null, null, null, null, null, null, null, 'O', null, null, null, null, null, null],
- //  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
- //  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
- //];
- //renderAllStone();
+   gameBoard = [  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+   [null, null, null, null, null, null,  'O', null, null, null, null, null, null, null, null, null],
+   [null, null, null, null, null, null, null,  'O', null, null, null, null, null, null, null, null],
+   [null, null, null, null, null,  'O',  'O',  'X',  'X', null, null, null, null, null, null, null],
+   [null, null, null, null, null, null, null,  'O',  null, null, null, null, null, null, null, null],
+   [null, null, null, null, null, null,  'X',  'X',  'O',  'X', null, null, null, null, null, null],
+   [null, null, null, null, null, null, null, null, null,  'X', null, null, null, null, null, null],
+   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+ ];
+ renderAllStone();
 
     //gameBoard[7][8] ='O';
     //renderAllStone();
