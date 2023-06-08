@@ -135,24 +135,24 @@ function initGameBoard(){
             gameBoardContainer.appendChild(cell);
         }
     }
-//   gameBoard = [  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-//   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-//   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-//   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-//   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-//   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-//   [null, null, null, null, null, null, null, null, 'O', null, null, null, 'O', null, null, 'O'],
-//   [null, null, null, null, null, null, null, null, null, 'X', null, 'O',  'X',  'O', 'O', 'O'],
-//   [null, null, null, null, null, null, null, null, null, 'O', 'X',  'X',  'X',  'X', 'O', null],
-//   [null, null, null, null, null, null, null, null, null, null, 'O', 'X',  'X',  'X', null, null],
-//   [null, null, null, null, null, null, null, null,  'X', 'O', 'X',  'X',  'X',  'X',  'O', null],
-//   [null, null, null, null, null, null, null, null,  'O', 'X', 'X',  'X',  'O',  'O', null, null],
-//   [null, null, null, null, null, null, null, null,  'O', 'O', null,  'O', null, null,  'X', null],
-//   [null, null, null, null, null, null, null, null, null, 'O', null, null, null, null, null, null],
-//   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-//   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-// ];
-// renderAllStone();
+ //  gameBoard = [  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+ //  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+ //  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+ //  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+ //  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+ //  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+ //  [null, null, null, null, null, null, null, null, 'O', null, null, null, null, null, null, 'O'],
+ //  [null, null, null, null, null, null, null, null, null, 'X', null, 'O',  'X',  'O', 'O', 'O'],
+ //  [null, null, null, null, null, null, null, null, null, 'O', 'X',  'X',  'X',  'X', 'O', null],
+ //  [null, null, null, null, null, null, null, null, null, null, 'O', 'X',  'X',  'X', null, null],
+ //  [null, null, null, null, null, null, null, null,  'X', 'O', 'X',  'X',  'X',  'X',  'O', null],
+ //  [null, null, null, null, null, null, null, null,  'O', 'X', 'X',  'X',  'O',  'O', null, null],
+ //  [null, null, null, null, null, null, null, null,  'O', 'O', null,  'O', null, null,  'X', null],
+ //  [null, null, null, null, null, null, null, null, null, 'O', null, null, null, null, null, null],
+ //  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+ //  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+ //];
+ //renderAllStone();
 
     //gameBoard[7][8] ='O';
     //renderAllStone();

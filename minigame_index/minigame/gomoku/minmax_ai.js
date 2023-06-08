@@ -140,7 +140,7 @@ function alphaBetaPruning(board, depth, alpha, beta, maximizingPlayer, move) {
         if(eval===-Infinity){
             otherInfinity =true;
         }
-        if(!maximizingPlayer && eval===-Infinity && !opponentWinningMove.find(item => item.col === newMove.col && item.row === newMove.row)){
+        if(!maximizingPlayer && depth===1 && eval===-Infinity && !opponentWinningMove.find(item => item.col === newMove.col && item.row === newMove.row)){
             opponentWinningMove.push(newMove);
         }
         if (maximizingPlayer) {
