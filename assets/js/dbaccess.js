@@ -135,9 +135,9 @@ function BindLeaderBoardList(MyList, GameID){
         }
         var index=1;
         if(GameID===3){
-            $('#LHighestScore_'+GameID).text('Name: {0} / Level: {1} / Steps: {2}'.format(MyList[0].Name, MyList[0].MaxLevel ,MyList[0].Score));
+            $('#LHighestScore_'+GameID).text('Name: {0} / Level: {1} / Steps: {2}'.format(MyList[0].Name.substring(0, 10), MyList[0].MaxLevel ,MyList[0].Score));
         }else{
-            $('#LHighestScore_'+GameID).text('Name: {0} / Score: {1}'.format(MyList[0].Name, MyList[0].Score));
+            $('#LHighestScore_'+GameID).text('Name: {0} / Score: {1}'.format(MyList[0].Name.substring(0, 10), MyList[0].Score));
         }
         var total =10;
         var content;
@@ -146,9 +146,9 @@ function BindLeaderBoardList(MyList, GameID){
                 return;
             }
             if(GameID===3){
-                content = 'Rank {0} --- Name: {1} ---- Max Level: {2} --- Total Steps: {3}'.format(index,item.Name, item.MaxLevel, item.Score);
+                content = 'Rank {0} --- Name: {1} ---- Max Level: {2} --- Total Steps: {3}'.format(index,item.Name.substring(0, 10), item.MaxLevel, item.Score);
             }else{
-                content = 'Rank {0} --- Name: {1} ---- Score: {2}'.format(index,item.Name, item.Score);
+                content = 'Rank {0} --- Name: {1} ---- Score: {2}'.format(index,item.Name.substring(0, 10), item.Score);
             }
             if(index<=3){
                 $('#l{0}_{1}'.format(index, GameID)).text(content);
