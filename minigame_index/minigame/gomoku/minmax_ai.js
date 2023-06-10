@@ -23,12 +23,12 @@ function findBestMove(board, maxDepth, userMove) {
     opponentWinningMove= [];
     for (let depth = 1; depth <= maxDepth; depth++) {
         const { move, eval } = alphaBetaPruning(board, depth, -Infinity, Infinity, true, userMove);
-
+        console.log(eval);
         if (eval === Infinity) {
             // Found a winning move, no need to search further
             return move;
         }
-
+        
         bestMove = move;
     }
     return bestMove;
@@ -134,7 +134,7 @@ function alphaBetaPruning(board, depth, alpha, beta, maximizingPlayer, move) {
         makeMove(board, newMove, maximizingPlayer ? aiPlayer : opponentPlayer);
         let { eval } = alphaBetaPruning(board, depth - 1, alpha, beta, !maximizingPlayer, newMove);
         undoMove(board, newMove);
-        if(otherInfinity && eval!==-Infinity){
+        if(otherInfinity && eval!==-Infinity && depth===1 ){
             eval =Infinity;
         }
         if(eval===-Infinity){

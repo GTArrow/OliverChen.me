@@ -10,8 +10,34 @@ table{
     height: 50px;
 }
 
+.spinner {
+  margin: 0 auto;
+  width: 70px;
+  text-align: center;
+}
+
+.spinner div {
+  background-color: #333;
+  height: 18px;
+  width: 6px;
+  display: inline-block;
+  margin-right: 3px;
+  animation: stretchdelay 1.2s infinite ease-in-out;
+}
+
+@keyframes stretchdelay {
+  0%, 40%, 100% { transform: scaleY(0.4); }
+  20% { transform: scaleY(1.0); }
+}
+
+
+.emptyRow{
+  height:5px;
+}
+
 .site-section{
     min-height: 220px;
+    padding-top: 60px;
 }
 
 #game-board {
@@ -23,6 +49,10 @@ table{
     max-height: 535px;
     margin: 0 auto;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.842);
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 
 .cell {

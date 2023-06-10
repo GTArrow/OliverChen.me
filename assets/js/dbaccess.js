@@ -68,7 +68,7 @@ signInAnonymously(auth)
 
   
 
-if($('#LHighestScore_1').length>0 || $('#LHighestScore_2').length>0 || $('#LVleaderboard_1').length >0 || $('#LVleaderboard_2').length >0){
+if($('#LHighestScore_1').length>0 || $('#LHighestScore_2').length>0 || $('#LHighestScore_3').length>0  || $('#LVleaderboard_1').length >0 || $('#LVleaderboard_2').length >0 || $('#LVleaderboard_3').length >0){
     window.onload = async function() {
         const Col = collection(db, 'LeaderBoard');
         const Snapshot = await getDocs(Col);
@@ -83,12 +83,16 @@ if($('#LHighestScore_1').length>0 || $('#LHighestScore_2').length>0 || $('#LVlea
             
             var NewList;
             if($('#LHighestScore_1').length>0 || $('#LVleaderboard_1').length >0){
-                NewList = MyList.filter(item => item.GameID == 1 && !isNaN(item.Score) && parseInt(item.Score)<400);
+                NewList = MyList.filter(item => item.GameID === 1 && !isNaN(item.Score) && parseInt(item.Score)<400);
                 BindLeaderBoardList(NewList, 1);
             }
             if($('#LHighestScore_2').length>0 || $('#LVleaderboard_2').length >0){
-                NewList = MyList.filter(item => item.GameID == 2 && !isNaN(item.Score) && parseInt(item.Score)<400);
+                NewList = MyList.filter(item => item.GameID === 2 && !isNaN(item.Score) && parseInt(item.Score)<400);
                 BindLeaderBoardList(NewList, 2);
+            }
+            if($('#LHighestScore_3').length>0  || $('#LVleaderboard_3').length >0){
+                NewList = MyList.filter(item => item.GameID === 3 && !isNaN(item.Score) && parseInt(item.Score)<400);
+                BindLeaderBoardList(NewList, 3);
             }
         }
     }
@@ -97,14 +101,24 @@ if($('#LHighestScore_1').length>0 || $('#LHighestScore_2').length>0 || $('#LVlea
 window.updateUserScore = async function(GameID){
     var name = $("#TBName").val();
     var score = $("#HScore").val();
+    var level = $("#HLevel").val();
     console.log(score)
+    console.log(level)
+    var option = {
+        Name: name,
+        Score: score,
+        GameID: parseInt(GameID),
+    };
+    if(level!==null && level!==undefined){
+        option.MaxLevel = level;
+    }
     if(!isNaN(score) && parseInt(score)<400){
-        await addDoc(collection(db,'LeaderBoard'),{
-            Name: name,
-            Score: score,
-            GameID: parseInt(GameID),
-        });
-        window.location.href = 'game_end/index.html?score='+score;
+        await addDoc(collection(db,'LeaderBoard'),option);
+        if(GameID===3){
+            window.location.href = '../leaderboard/index.html';
+        }else{
+            window.location.href = 'game_end/index.html?score='+score;
+        }
     }
 }
 
@@ -113,17 +127,29 @@ function BindLeaderBoardList(MyList, GameID){
     var CurScore = GetURLParameter('score');
     $('#LCurScore').text(CurScore);
     if(MyList.length>0){
-        MyList.sort((a,b)=>b.Score-a.Score);
+        if(GameID===3){
+            MyList.sort((a,b)=>(b.MaxLevel-a.MaxLevel == 0)? (a.Score-b.Score): (b.MaxLevel-a.MaxLevel));
+        }
+        else{
+            MyList.sort((a,b)=>b.Score-a.Score);
+        }
         var index=1;
-        
-        $('#LHighestScore_'+GameID).text('Name: {0} / Score: {1}'.format(MyList[0].Name, MyList[0].Score));
+        if(GameID===3){
+            $('#LHighestScore_'+GameID).text('Name: {0} / Level: {1} / Steps: {2}'.format(MyList[0].Name, MyList[0].MaxLevel ,MyList[0].Score));
+        }else{
+            $('#LHighestScore_'+GameID).text('Name: {0} / Score: {1}'.format(MyList[0].Name, MyList[0].Score));
+        }
         var total =10;
         var content;
         for(const item of MyList){
             if(index>total){
                 return;
             }
-            content = 'Rank {0} --- Name: {1} ---- Score: {2}'.format(index,item.Name, item.Score);
+            if(GameID===3){
+                content = 'Rank {0} --- Name: {1} ---- Max Level: {2} --- Total Steps: {3}'.format(index,item.Name, item.MaxLevel, item.Score);
+            }else{
+                content = 'Rank {0} --- Name: {1} ---- Score: {2}'.format(index,item.Name, item.Score);
+            }
             if(index<=3){
                 $('#l{0}_{1}'.format(index, GameID)).text(content);
             }else{

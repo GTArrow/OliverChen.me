@@ -17,7 +17,10 @@ let currentPlayer = 0;
 
 // Game state
 let gameState = 'ongoing';
-
+let stoneCount =0;
+let stepCount =0;
+let totalStepCount =0;
+let levelCount =1;
 var winList = [];
 var opponentWinningMove =[];
 
@@ -25,6 +28,24 @@ initGameBoard();
 
 let isFirstClick = true; // Flag to track the first click
 let timer; // Timer to detect the double-click
+
+function nextLevel(){
+  if(gameState !=='end'){
+    $("#myModal").modal('hide');
+    levelCount++;
+    reset();
+  }else{
+    updateUserScore(3);
+    $("#myModal").modal('hide');
+    levelCount=1;
+    reset();
+  }
+}
+
+function updateLevel(){
+  $("#Llevel").text(`Level ${levelCount}`);
+  $("#HLevel").val(levelCount);
+}
 
 function handleGameBoardClick(event) {
     if (gameState !== 'ongoing') {
@@ -79,8 +100,10 @@ function handleGameBoardClick(event) {
           renderAllStone();
           disableClickEvents();
 
+          $(".spinner").show();
           setTimeout(() => {
-            var aiMove = findBestMove(gameBoard,4, {row, col});
+            const maxMove = stoneCount>40?2:4;
+            var aiMove = findBestMove(gameBoard,maxMove, {row, col});
             if(aiMove===null){
               if(opponentWinningMove.length>0){
                 console.log(opponentWinningMove);
@@ -99,7 +122,8 @@ function handleGameBoardClick(event) {
                 // Reset for the next stone placement
             isFirstClick = true;
             clearTimeout(timer);
-        }, 3);
+            $(".spinner").hide();
+        }, 100);
       }
     }
   }
@@ -125,37 +149,17 @@ function enableClickEvents() {
 }
 
 function initGameBoard(){
-    for (let i = 0; i <= boardSize; i++) {
-        gameBoard[i] = new Array(boardSize+1).fill(null);
-    }
-    for (let i = 0; i < boardSize; i++) {
-        for (let j = 0; j < boardSize; j++) {
-            const cell = document.createElement('div');
-            cell.className = 'cell';
-            gameBoardContainer.appendChild(cell);
-        }
-    }
-   gameBoard = [  [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-   [null, null, null, null, null, null,  'O', null, null, null, null, null, null, null, null, null],
-   [null, null, null, null, null, null, null,  'O', null, null, null, null, null, null, null, null],
-   [null, null, null, null, null,  'O',  'O',  'X',  'X', null, null, null, null, null, null, null],
-   [null, null, null, null, null, null, null,  'O',  null, null, null, null, null, null, null, null],
-   [null, null, null, null, null, null,  'X',  'X',  'O',  'X', null, null, null, null, null, null],
-   [null, null, null, null, null, null, null, null, null,  'X', null, null, null, null, null, null],
-   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
-   [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
- ];
- renderAllStone();
-
-    //gameBoard[7][8] ='O';
-    //renderAllStone();
+  //for (let i = 0; i <= boardSize; i++) {
+  //    gameBoard[i] = new Array(boardSize+1).fill(null);
+  //}
+  for (let i = 0; i < boardSize; i++) {
+      for (let j = 0; j < boardSize; j++) {
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          gameBoardContainer.appendChild(cell);
+      }
+  }
+  reset();
 }
 
 function renderAllStone(){
@@ -215,17 +219,40 @@ function placeStone(row, col) {
     if (gameState !== 'ongoing' || gameBoard[row][col] !== null) {
       return; // Ignore the move if the game is not ongoing or the position is already occupied
     }
-  
+    stoneCount++;
+    if(players[currentPlayer]===opponentPlayer){
+      stepCount++;
+      $("#LStep").text(stepCount);
+    }
     gameBoard[row][col] = players[currentPlayer];
   
     // Check for a win
     if (checkWin(row, col)) {
+      totalStepCount+=stepCount;
       gameState = 'win';
       var msg = (players[currentPlayer]==='X'?"White":"Black") + "</br>"+' Wins!';
 
       $("#Lwinner").html(msg);
       $("#Lwinner").show();
+
+      if(levelCount==5 || players[currentPlayer]==='O'){
+        gameState = 'end';
+        $("#rwinner").show();
+        $("#BSubmit").text("Submit");
+        $("#HScore").val(totalStepCount);
+      }else{
+        $("#rwinner").hide();
+        $("#BSubmit").text("Next");
+      }
+      $("#myModal").modal({
+        keyboard: false,
+        backdrop: 'static'
+      });
+      $("#LScore").text(stepCount);
       return;
+    }else{
+      $("#rwinner").hide();
+      $("#BSubmit").text("Next");
     }
   
     // Check for a draw
@@ -335,6 +362,18 @@ function checkWin(row, col) {
   
     return false;
   }
+
+  function countStones(board){
+    let count=0;
+    for (let row = 0; row <= boardSize; row++) {
+      for (let col = 0; col <= boardSize; col++) {
+        if (board[row][col] !== null) {
+          count++;
+        }
+      }
+    }
+    return count;
+  }
   
   // Function to check for a draw condition
   function checkDraw(board) {
@@ -349,13 +388,20 @@ function checkWin(row, col) {
   }
 
   function reset(){
-    clearStones();
-    for (let i = 0; i <= boardSize; i++) {
-        gameBoard[i] = new Array(boardSize+1).fill(null);
-    }
+    console.log("work")
+    //for (let i = 0; i <= boardSize; i++) {
+    //    gameBoard[i] = new Array(boardSize+1).fill(null);
+    //}
     $("#Lwinner").hide();
     gameState = 'ongoing';
     winList =[];
     opponentWinningMove= [];
     currentPlayer =0;
+    stoneCount =0;
+    stepCount =0;
+    $("#LStep").text(stepCount);
+    updateLevel();
+    gameBoard = structuredClone(levels[levelCount-1]);
+    stoneCount = countStones(gameBoard);
+    renderAllStone();
   }
