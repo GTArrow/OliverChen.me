@@ -44,7 +44,6 @@ function nextLevel(){
 
 function updateLevel(){
   $("#Llevel").text(`Level ${levelCount}`);
-  $("#HLevel").val(levelCount);
 }
 
 function handleGameBoardClick(event) {
@@ -228,7 +227,6 @@ function placeStone(row, col) {
   
     // Check for a win
     if (checkWin(row, col)) {
-      totalStepCount+=stepCount;
       gameState = 'win';
       var msg = (players[currentPlayer]==='X'?"White":"Black") + "</br>"+' Wins!';
 
@@ -241,6 +239,10 @@ function placeStone(row, col) {
         $("#BSubmit").text("Submit");
         $("#HScore").val(totalStepCount);
       }else{
+        //update the max winning level
+        $("#HLevel").val(levelCount);
+        //update total winning step
+        totalStepCount+=stepCount;
         $("#rwinner").hide();
         $("#BSubmit").text("Next");
       }
