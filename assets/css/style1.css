@@ -47,6 +47,11 @@
 
 /* CUSTOM RESETS
 ================================================== */
+.mb-15{
+   margin-bottom: 15px !important; 
+}
+
+
 a {
     transition: color 0.25s ease-in-out;
     -moz-transition: color 0.25s ease-in-out;
@@ -767,6 +772,13 @@ a.icon-up-bg:hover {color: #212121;}
       position: absolute;
       top: -12%;
     }
+}
+
+.leaderboard a{
+    color: white;
+}
+.leaderboard a:hover{
+    color: lightblue;
 }
 /*#carouselExampleIndicators .carousel-inner .first-item{*/
 /*  height: 100%;*/

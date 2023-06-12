@@ -113,7 +113,7 @@ function handleGameBoardClick(event) {
                 console.log("There is no way for ai to win, so AI goes randomly.")
               }
             }
-            console.log(aiMove);
+            //console.log(aiMove);
 
             placeStone(aiMove.row, aiMove.col);
             renderAllStone();
@@ -234,6 +234,10 @@ function placeStone(row, col) {
       $("#Lwinner").show();
 
       if(levelCount==5 || players[currentPlayer]==='O'){
+        if(levelCount==5){
+          //update the max winning level
+          $("#HLevel").val(levelCount);
+        }
         gameState = 'end';
         $("#rwinner").show();
         $("#BSubmit").text("Submit");
@@ -390,7 +394,6 @@ function checkWin(row, col) {
   }
 
   function reset(){
-    console.log("work")
     //for (let i = 0; i <= boardSize; i++) {
     //    gameBoard[i] = new Array(boardSize+1).fill(null);
     //}

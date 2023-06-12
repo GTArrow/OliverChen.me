@@ -110,15 +110,15 @@ window.updateUserScore = async function(GameID){
         GameID: parseInt(GameID),
     };
     if(level!==null && level!==undefined){
+        if(level===''){
+            level ='0';
+        }
         option.MaxLevel = level;
     }
     if(!isNaN(score) && parseInt(score)<400){
         await addDoc(collection(db,'LeaderBoard'),option);
-        if(GameID===3){
-            window.location.href = '../leaderboard/index.html';
-        }else{
-            window.location.href = 'game_end/index.html?score='+score;
-        }
+        window.location.href = '../leaderboard/index.html';
+        //window.location.href = 'game_end/index.html?score='+score;
     }
 }
 
@@ -133,22 +133,24 @@ function BindLeaderBoardList(MyList, GameID){
         else{
             MyList.sort((a,b)=>b.Score-a.Score);
         }
+        let name = MyList[0].Name.substring(0, 15);
         var index=1;
         if(GameID===3){
-            $('#LHighestScore_'+GameID).text('Name: {0} / Level: {1} / Steps: {2}'.format(MyList[0].Name.substring(0, 10), MyList[0].MaxLevel ,MyList[0].Score));
+            $('#LHighestScore_'+GameID).text('Name: {0} / Level: {1} / Steps: {2}'.format(name, MyList[0].MaxLevel ,MyList[0].Score));
         }else{
-            $('#LHighestScore_'+GameID).text('Name: {0} / Score: {1}'.format(MyList[0].Name.substring(0, 10), MyList[0].Score));
+            $('#LHighestScore_'+GameID).text('Name: {0} / Score: {1}'.format(name, MyList[0].Score));
         }
         var total =10;
         var content;
         for(const item of MyList){
+            name = item.Name.substring(0, 15);
             if(index>total){
                 return;
             }
             if(GameID===3){
-                content = 'Rank {0} --- Name: {1} ---- Max Level: {2} --- Total Steps: {3}'.format(index,item.Name.substring(0, 10), item.MaxLevel, item.Score);
+                content = 'Rank {0} --- Name: {1} ---- Max Level: {2} --- Total Steps: {3}'.format(index,name, item.MaxLevel, item.Score);
             }else{
-                content = 'Rank {0} --- Name: {1} ---- Score: {2}'.format(index,item.Name.substring(0, 10), item.Score);
+                content = 'Rank {0} --- Name: {1} ---- Score: {2}'.format(index,name, item.Score);
             }
             if(index<=3){
                 $('#l{0}_{1}'.format(index, GameID)).text(content);

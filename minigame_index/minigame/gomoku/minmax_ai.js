@@ -21,9 +21,10 @@ const pattern ={
 function findBestMove(board, maxDepth, userMove) {
     let bestMove = null;
     opponentWinningMove= [];
+    let moveTrack =[];
     for (let depth = 1; depth <= maxDepth; depth++) {
-        const { move, eval } = alphaBetaPruning(board, depth, -Infinity, Infinity, true, userMove);
-        console.log(eval);
+        const { move, eval } = alphaBetaPruning(board, depth, maxDepth, -Infinity, Infinity, true, userMove, moveTrack);
+        //console.log(eval);
         if (eval === Infinity) {
             // Found a winning move, no need to search further
             return move;
@@ -122,27 +123,41 @@ function undoMove(board, move){
 }
 
 
-function alphaBetaPruning(board, depth, alpha, beta, maximizingPlayer, move) {
-    if (depth === 0 || isGameOver(board, move)) {
-      return { eval: evaluate(board, move), move:move};
+function alphaBetaPruning(board, depth, maxDepth, alpha, beta, maximizingPlayer, lastmove, moveTrack) {
+    if (depth === 0 || isGameOver(board, lastmove)) {
+      return { eval: evaluate(board, lastmove), move:lastmove};
     }
     let bestEval = maximizingPlayer ? -Infinity : Infinity;
     let bestMove = null;
     let otherInfinity =false;
     let player = maximizingPlayer?aiPlayer:opponentPlayer;
-    for (let newMove of generatePossibleMoves(board, move, player)) {
-        makeMove(board, newMove, maximizingPlayer ? aiPlayer : opponentPlayer);
-        let { eval } = alphaBetaPruning(board, depth - 1, alpha, beta, !maximizingPlayer, newMove);
+    let oppPlayer = maximizingPlayer?opponentPlayer:aiPlayer;
+    for (let newMove of generatePossibleMoves(board, lastmove, player)) {
+        moveTrack.push({player: player, move: newMove});
+        makeMove(board, newMove, player);
+        let { eval } = alphaBetaPruning(board, depth - 1, maxDepth, alpha, beta, !maximizingPlayer, newMove, moveTrack);
+        if(depth===maxDepth-3){
+            if(eval===-Infinity){
+                otherInfinity =true;
+            }
+            if(otherInfinity && eval!==-Infinity){
+                eval =Infinity;
+            }
+            if(!maximizingPlayer && eval===-Infinity){
+                let index=moveTrack.length-1;
+                let oppShows =false;
+                while(index>=0 && (!oppShows || (oppShows && moveTrack[index].player!==player))){
+                    if(moveTrack[index].player===oppPlayer){
+                        oppShows =true;
+                    }
+                    index--;
+                }
+                if(index>=0 && moveTrack[index].player===player && !opponentWinningMove.find(item => item.col === moveTrack[index].move.col && item.row === moveTrack[index].move.row)){
+                    opponentWinningMove.push(moveTrack[index].move);
+                }
+            }
+        }
         undoMove(board, newMove);
-        if(otherInfinity && eval!==-Infinity && depth===1 ){
-            eval =Infinity;
-        }
-        if(eval===-Infinity){
-            otherInfinity =true;
-        }
-        if(!maximizingPlayer && depth===1 && eval===-Infinity && !opponentWinningMove.find(item => item.col === newMove.col && item.row === newMove.row)){
-            opponentWinningMove.push(newMove);
-        }
         if (maximizingPlayer) {
             if (eval > bestEval) {
             bestEval = eval;
@@ -197,7 +212,7 @@ function evaluate(board, move) {
     
     let s1 = countThreats(board, aiPlayer, move);
     let s2 = countThreats(board, opponentPlayer, move);
-    score = gamma *s1 -  s2;
+    score = s1 -  s2*gamma;
     // Return the final evaluation score
     return score;
 }
