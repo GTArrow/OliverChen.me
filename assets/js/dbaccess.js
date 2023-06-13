@@ -133,7 +133,7 @@ function BindLeaderBoardList(MyList, GameID){
         else{
             MyList.sort((a,b)=>b.Score-a.Score);
         }
-        let name = MyList[0].Name.substring(0, 15);
+        let name = MyList[0].Name.substring(0, 20);
         var index=1;
         if(GameID===3){
             $('#LHighestScore_'+GameID).text('Name: {0} / Level: {1} / Steps: {2}'.format(name, MyList[0].MaxLevel ,MyList[0].Score));
@@ -143,7 +143,7 @@ function BindLeaderBoardList(MyList, GameID){
         var total =10;
         var content;
         for(const item of MyList){
-            name = item.Name.substring(0, 15);
+            name = item.Name.substring(0, 20);
             if(index>total){
                 return;
             }
