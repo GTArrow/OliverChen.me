@@ -101,7 +101,7 @@ function handleGameBoardClick(event) {
 
           $(".spinner").show();
           setTimeout(() => {
-            const maxMove = stoneCount>25?2:4;
+            const maxMove = stoneCount>30?2:4;
             var aiMove = findBestMove(gameBoard,maxMove, {row, col});
             if(aiMove===null){
               if(opponentWinningMove.length>0){
