@@ -229,7 +229,9 @@ function placeStone(row, col) {
     if (checkWin(row, col)) {
       gameState = 'win';
       var msg = (players[currentPlayer]==='X'?"White":"Black") + "</br>"+' Wins!';
-
+      if(levelCount==5){
+        msg = "I Love You Emi </br> ❤️❤️❤️"
+      }
       $("#Lwinner").html(msg);
       $("#Lwinner").show();
 
@@ -405,6 +407,9 @@ function checkWin(row, col) {
     stoneCount =0;
     stepCount =0;
     $("#LStep").text(stepCount);
+    if(levelCount==5){
+      $(".RStep").text("YOU Know Where to Put the Stone 🥰")
+    }
     updateLevel();
     gameBoard = structuredClone(levels[levelCount-1]);
     stoneCount = countStones(gameBoard);
