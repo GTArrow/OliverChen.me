@@ -252,10 +252,10 @@ function placeStone(row, col) {
         $("#rwinner").hide();
         $("#BSubmit").text("Next");
       }
-      $("#myModal").modal({
-        keyboard: false,
-        backdrop: 'static'
-      });
+      // $("#myModal").modal({
+      //   keyboard: false,
+      //   backdrop: 'static'
+      // });
       $("#LScore").text(stepCount);
       return;
     }else{
