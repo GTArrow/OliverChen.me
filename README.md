@@ -1,7 +1,3 @@
-Sure! Here’s a polished **README** you can use for your **OliverChen.me** GitHub repository. I wrote it based on the fact that it’s a simple HTML/CSS/JS personal website (an online CV/portfolio) hosted in this repo. You can customize the text further if you want to add specific sections or features.
-
----
-
 # OliverChen.me
 
 **OliverChen.me** is a simple, lightweight personal portfolio website built with **HTML**, **CSS**, and **JavaScript**. This repository hosts the source code and assets for the static website — an online CV / professional profile showcasing skills, projects, and contact info.
